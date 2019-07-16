@@ -1,33 +1,113 @@
 .App {
   text-align: center;
+  overflow-x: hidden;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+  height: 2.2rem;
+  padding: .2rem;
+}
+
+.App-bg {
+  height: 100vH;
+  margin-left: -25%;
+}
+
+@media screen and (min-width: 479px) {
+  .App-bg {
+    position: absolute;
+    height: 100vH;
+    right: 0;
+  }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  height: 2.7rem;
+  width: 100vW;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  box-shadow: 0 -1px 4px #f4f4f4;
 }
 
 .App-link {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sign_in {
+  position: absolute;
+  top: 30%;
+  right: 1rem;
+}
+
+.sign_in-input {
+  display: block;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  width: 10.5rem;
+  height: 1rem;
+  font-size: 1rem;
+  border-radius: .8rem;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.sign_in-input:focus {
+  outline: none;
+}
+
+.sign_in-input--top {
+  border-radius: .8rem .8rem 0 0;
+  border-bottom: 0;
+}
+
+.sign_in-input--bottom {
+  border-radius: 0 0 .8rem .8rem;
+}
+
+.sign_in_btn {
+  margin: auto;
+  border: 1px solid #ffffff;
+  border-radius: .4rem;
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: bold;
+  height: 2.3rem;
+  margin: .2rem 0 .1rem 0;
+  overflow: visible;
+  padding: 0 0rem;
+  margin: .1rem;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #ffe836;
+}
+
+.sign_in_btn-text {
+  line-height: 1rem;
+  margin: auto;
+  display: inline;
+  width: 100%;
+  text-shadow: 0 -1px rgba(0, 0, 0, .25);
+  color: #fff;
+  padding: 0.5rem 3.8rem;
+  border: 0;
+  border-radius: .6rem;
+}
+
+.sign_up-opt {
+  font-size: .8rem;
+  margin: .3rem .2rem;
+  padding: .4rem;
+  border-top: .5px solid #e8e8e8;
+}
+
+.sign_up-text {
+  margin: auto;
+  color: #4f36ff;
+  font-size: .9rem;
+  padding: 0 0 0 .1rem;
 }
