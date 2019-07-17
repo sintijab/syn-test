@@ -1,0 +1,11 @@
+export const LOGGED_IN = "LOGGED_IN"
+export const CLIENT_FAILED = "CLIENT_FAILED"
+export const REQUEST_FAILED = "REQUEST_FAILED"
+export const LOGGED_OUT = "LOGGED_OUT"
+
+export const FETCH_PROJECTS = "FETCH_PROJECTS"
+export const NEW_PROJECT = "NEW_PROJECT"
+export const DELETE_PROJECT = "DELETE_PROJECT"
+
+export const SHOW_OVERLAY = "SHOW_OVERLAY"
+export const CLOSE_OVERLAY = "CLOSE_OVERLAY"

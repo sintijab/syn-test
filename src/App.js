@@ -3,6 +3,7 @@ import logo from './img/logo.png';
 import background from './img/index.png';
 import './App.css';
 import SignIn from './SignIn/SignIn';
+import { connect } from 'react-redux';
 
 function App() {
   return (
@@ -16,4 +17,4 @@ function App() {
   );
 }
 
-export default App;
+export default connect()(App);
