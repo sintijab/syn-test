@@ -5,8 +5,8 @@
 }
 
 .App-logo {
-  height: 2.2rem;
-  padding: .2rem;
+  height: 1.6rem;
+  padding: .2rem 0 .7rem 0;
 }
 
 .App-bg {
@@ -23,7 +23,7 @@
 }
 
 .App-header {
-  height: 2.7rem;
+  height: 1.8rem;
   width: 100vW;
   position: absolute;
   bottom: 0;
@@ -88,7 +88,7 @@
 
 .sign_in_btn-text {
   line-height: 1rem;
-  margin: auto;
+  margin: .2rem 0;
   display: inline;
   width: 100%;
   text-shadow: 0 -1px rgba(0, 0, 0, .25);
@@ -110,4 +110,74 @@
   color: #4f36ff;
   font-size: .9rem;
   padding: 0 0 0 .1rem;
+}
+
+.menu {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 0;
+  width: 100vW;
+  height: 1.4rem;
+  background: #fffc00;
+  box-shadow: 0 1px 4px #e4de52;
+}
+
+.menu--closed {
+  background: #5442abf0;
+}
+
+.menu_header {
+  z-index: 1;
+  top: 0;
+}
+
+.menu_icon {
+  height: 90%;
+  padding: 0rem .5rem;
+  float: left;
+}
+
+.arrow_icon--menu {
+  height: 100%;
+  float: right;
+  padding: 0 .3rem;
+}
+
+.menu_nav--open {
+  position: absolute;
+  bottom: 1.8rem;
+  top: 0;
+  width: 100vW;
+  height: 100vH;
+  background: #ffffff;
+}
+
+.menu_nav--closed {
+  height: 0;
+}
+
+.nav {
+  width: 100vH;
+  height: 2.2rem;
+  top: 1.3rem;
+  position: absolute;
+  background: #f5f21d;
+}
+
+.nav_icon {
+  height: 1.9rem;
+  list-style-type: none;
+  display: inline-block;
+  padding: 0 1rem .2rem 1rem;
+}
+
+.nav_icon-img {
+  height: 2rem;
+  padding: .2rem;
+}
+
+.nav_list {
+  width: 100vW;
+  margin: 0;
+  padding: 0;
 }

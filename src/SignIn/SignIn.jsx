@@ -76,10 +76,6 @@ class SignIn extends React.Component {
        </div>
      );
     }
-
-    if (isMobile && loggedIn) {
-      return <div>Welcome</div>
-    }
     return <div />;
    }
 }
