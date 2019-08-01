@@ -1,9 +1,11 @@
 import React from 'react';
 import { getCookie } from '../functions.js';
-import arrowIconUp from '../img/arrow-up.png';
+import arrowIconUp from '../img/arrow-up2.png';
 import arrowIconDown from '../img/arrow-down.png';
-import menuIcon from '../img/menu.png';
+import additionIcon from '../img/addition.png';
+import menuIcon from '../img/menu2.png';
 import Tabs from './Tabs.jsx';
+import PostForm from './PostForm';
 
 class Menu extends React.Component {
 
@@ -13,8 +15,10 @@ class Menu extends React.Component {
       loggedIn: !!(getCookie('val')),
       isMobile: !!(window.innerWidth < 479),
       menuVisible: false,
+      displayOverlay: false,
     }
     this.expandMenu = this.expandMenu.bind(this);
+    this.toggleOverlay = this.toggleOverlay.bind(this);
   }
 
   expandMenu() {
@@ -22,9 +26,14 @@ class Menu extends React.Component {
     this.setState({ menuVisible: !menuVisible });
   }
 
+  toggleOverlay() {
+    const { displayOverlay } = this.state;
+    this.setState({ displayOverlay: !displayOverlay });
+  }
+
 
   render() {
-    const { isMobile, loggedIn, menuVisible } = this.state;
+    const { isMobile, loggedIn, menuVisible, displayOverlay } = this.state;
     const menuClass = menuVisible ? "menu_nav--open" : "menu_nav--open menu_nav--closed";
     const menuHeaderClass = !menuVisible ? "menu menu--closed" : "menu";
       if (isMobile && loggedIn) {
@@ -42,6 +51,8 @@ class Menu extends React.Component {
                   </div>}
                 {menuVisible && <Tabs isMobile loggedIn menuVisible />}
               </div>
+              {menuVisible && <img alt="menu" src={additionIcon} className="addition-icon" onClick={this.toggleOverlay}/>}
+              {menuVisible && displayOverlay && <PostForm toggleOverlay={this.toggleOverlay} />}
          </div>
        );
       }

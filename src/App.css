@@ -123,7 +123,7 @@
 }
 
 .menu--closed {
-  background: #5442abf0;
+  background: #fffc00;
 }
 
 .menu_header {
@@ -180,4 +180,74 @@
   width: 100vW;
   margin: 0;
   padding: 0;
+}
+
+.addition-icon {
+  position: absolute;
+  top: 2rem;
+  height: 3rem;
+  right: .5rem;
+}
+
+.post-form-overlay {
+  position: absolute;
+  display: block;
+  top: 6rem;
+  width: 90vW;
+  height: auto;
+  margin: auto;
+  padding: 1rem .5rem;
+  border: 2px solid #00000099;
+  background: #ffffff;
+  border-radius: 9px;
+  right: 0;
+  left: 0;
+}
+
+.post_form-control {
+  width: 94%;
+  height: 1rem;
+  margin: 3px 3px 3px 0;
+  padding: 10px;
+  font-size: 0.9rem;
+  border: .5px solid #00000099;
+  border-radius: 10px;
+  font-family: 'PT Mono',Tahoma,Arial,sans-serif;
+  background: #ffffff;
+  color: #000000;
+}
+
+.post_form-control--submit {
+  margin: 10px 0 0 0;
+}
+
+.btn.btn-info {
+  height: 35px;
+  width: 120px;
+  padding: 10px;
+  background: #ffffff;
+  font-size: 0.8rem;
+  font-family: 'PT Mono',Tahoma,Arial,sans-serif;
+  border: .5px solid #3c3c3c;
+  border-radius: 5px;
+  cursor: not-allowed;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: 1px solid #fffc00;
+}
+
+.form-text-area {
+  height: 10rem;
+}
+
+.form-close {
+  float: right;
+  padding: 0 .5rem 1rem 0;
+  font-family: 'PT Mono',Tahoma,Arial,sans-serif;
+  font-size: 0.8rem;
+  color: #3c3c3c;
 }

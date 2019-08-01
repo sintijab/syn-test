@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from './img/logo.png';
-import background from './img/index.png';
+import background from './img/index2.png';
 import './App.css';
 import SignIn from './SignIn/SignIn';
 import Menu from './Menu/Menu';
