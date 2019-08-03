@@ -15,6 +15,7 @@ class PostForm extends React.Component{
       plan: '',
       info: '',
       city: getCookie('city'),
+      author: getCookie('uId'),
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -35,7 +36,7 @@ class PostForm extends React.Component{
 
   handleSubmit(event) {
     event.preventDefault();
-    const { title, about, imgurl, period, plan, info, city } = this.state;
+    const { title, about, imgurl, period, plan, info, city, author } = this.state;
     const { submit } = this.props;
     const params = {
       title: title,
@@ -82,6 +83,13 @@ class PostForm extends React.Component{
           value: city,
           key: 'city',
           title: 'City (range)',
+          type: 'text',
+          children: null
+        },
+        {
+          value: author,
+          key: 'author',
+          title: 'Author',
           type: 'text',
           children: null
         },
