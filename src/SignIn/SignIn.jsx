@@ -1,7 +1,7 @@
 import React from 'react';
 import { getCookie } from '../functions.js';
 import { connect } from 'react-redux';
-import { signInAction } from '../actions/signActions.js';
+import { signInAction, getCurrentLocation } from '../actions/signActions.js';
 
 const Cosmic = require('cosmicjs')();
 
@@ -32,7 +32,6 @@ class SignIn extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    debugger;
 
     const { email, password } = this.state;
     Cosmic.authenticate({
@@ -43,8 +42,9 @@ class SignIn extends React.Component {
         loggedIn: true,
         password: '',
         email: '',
-      })
+      });
       this.props.signInAction(data, email);
+      getCurrentLocation();
     })
     .catch(err => {
       console.log(err)

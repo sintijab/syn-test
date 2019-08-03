@@ -1,5 +1,6 @@
 import { LOGGED_IN, LOGGED_OUT } from "./types"
 import { setCookie, eraseCookie, getCookie } from '../functions.js';
+import axios from 'axios';
 
 export const signInAction = (data, uEmail) => dispatch => {
   setCookie('val', data.token, 1);
@@ -37,4 +38,17 @@ export const signStatusAction = () => dispatch => {
     type: LOGGED_OUT,
    })
   }
+}
+
+export const getCurrentLocation = () => {
+  axios.get(`http://api.ipstack.com/79.224.135.162?access_key=5e516d5bae0bfa0abd9896479873ad01`)
+  .then(function (response) {
+    if (response && response.data && response.data.city) {
+      setCookie('city', response.data.city, 1);
+      return response.data.city;
+    }
+  })
+  .catch(function (error) {
+    console.log(error)
+  })
 }
