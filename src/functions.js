@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export function getCookie(name) {
   var nameEQ = name + "=";
   var ca = document.cookie.split(';');
@@ -51,3 +53,14 @@ export function generateToken() {
     expires: expires
   };
 }
+
+export function validateImgSource(src) {
+  src = src.split('?')[0];
+  var parts = src.split('.');
+  var extension = parts[parts.length-1];
+  var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp']
+  if(imageTypes.indexOf(extension) !== -1) {
+    return true;
+  }
+    return false;
+  }

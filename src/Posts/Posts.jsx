@@ -1,5 +1,8 @@
 import React from 'react';
-import { getCookie } from '../functions.js';
+import { getCookie, validateImgSource} from '../functions.js';
+import defaultPostImg1 from '../img/default01.png';
+import defaultPostImg2 from '../img/default02.png';
+import defaultPostImg3 from '../img/default02.png';
 import axios from 'axios';
 import Post from './Post';
 
@@ -12,6 +15,7 @@ class Posts extends React.Component {
       isMobile: !!(window.innerWidth < 479),
       loggedIn: !!(getCookie('val')),
       cosmic: null,
+      imageIsValid: false,
     }
 
     const _this = this;
@@ -28,12 +32,21 @@ class Posts extends React.Component {
             loading: false
           })
         } else {
-          _this.setState({
-            cosmic: {
-              posts: response.data.objects,
-            },
-            loading: false
-          })
+          let postItems = response.data.objects || [];
+          if (postItems && postItems.length) {
+            postItems.forEach(post => {
+              const isSourceValid = validateImgSource(post.metadata.img);
+              if (!isSourceValid) {
+                const defaultNumber = Math.floor((Math.random() * 3) + 1);
+                post.metadata.img = defaultNumber === 1 ? defaultPostImg1 : defaultNumber === 2 ? defaultPostImg2 : defaultPostImg3;
+              }
+            })
+            _this.setState({
+              cosmic: {
+                posts: postItems,              },
+              loading: false
+            });
+          }
         }
       })
       .catch(function (error) {
@@ -42,13 +55,13 @@ class Posts extends React.Component {
     }
   }
 
-
   render() {
-    const { isMobile, loggedIn, cosmic } = this.state;
+    const { isMobile, loggedIn, cosmic, imageIsValid } = this.state;
+    const { expandInfo } = this.props;
       if (isMobile && loggedIn) {
         return (
           <div className="post-feed">
-          <Post isMobile={isMobile} loggedIn={loggedIn} cosmic={cosmic}/>
+          <Post isMobile={isMobile} loggedIn={loggedIn} cosmic={cosmic} imageIsValid={imageIsValid} />
          </div>
        );
       }
