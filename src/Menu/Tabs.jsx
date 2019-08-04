@@ -1,5 +1,4 @@
 import React from 'react';
-import { getCookie } from '../functions.js';
 import menuIcon1 from '../img/menu01.png';
 import menuIcon2 from '../img/menu02.png';
 import menuIcon3 from '../img/menu03.png';

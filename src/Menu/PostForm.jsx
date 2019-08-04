@@ -1,6 +1,5 @@
 import React from 'react';
 import { getCookie } from '../functions.js';
-const Cosmic = require('cosmicjs')();
 
 class PostForm extends React.Component{
 
