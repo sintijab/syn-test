@@ -55,7 +55,6 @@ class Post extends React.Component {
           </div>);
         return (
           <div className="active-post">
-            <img alt="next" src={nextBtn} className="active-post-btn-next" onClick={this.nextItem}/>
             <div className={postHeaderClassName} onClick={this.expandInfo}>
               <span className={postHeaderTextTitleClassName}>{activePost.title}</span>
               {showFullInfo && <br/>}
@@ -65,6 +64,8 @@ class Post extends React.Component {
               {showFullInfo && detailedInformation}
             </div>
             {activePost.metadata.img && <img src={activePost.metadata.img} alt="bkg" className={postHeaderImgClassName} />}
+            <img alt="next" src={nextBtn} className="active-post-btn-next" onClick={this.nextItem}/>
+
          </div>
        );
       }
