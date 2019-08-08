@@ -1,5 +1,7 @@
 import React from 'react';
 import nextBtn from '../img/arrow.png';
+import saveBtn from '../img/like.png';
+import saveBtnActive from '../img/like2.png';
 
 class Post extends React.Component {
 
@@ -10,9 +12,11 @@ class Post extends React.Component {
       activePost: null,
       showFullInfo: false,
       activeIndex: null,
+      btnActiveState: false,
     }
     this.expandInfo = this.expandInfo.bind(this);
     this.nextItem = this.nextItem.bind(this);
+    this.savePost = this.savePost.bind(this);
   }
 
   componentDidUpdate() {
@@ -36,9 +40,15 @@ class Post extends React.Component {
     }
   }
 
+  savePost() {
+    const { btnActiveState } = this.state;
+    this.setState({ btnActiveState: !btnActiveState });
+  }
+
+
   render() {
     const { isMobile, loggedIn } = this.props;
-    const { activePost,  showFullInfo } = this.state;
+    const { activePost,  showFullInfo, btnActiveState } = this.state;
       if (isMobile && loggedIn && activePost) {
         const postHeaderClassName = showFullInfo ? "active-post-header active-post-header-active" : "active-post-header";
         const postHeaderTextClassName = showFullInfo ? "active-post-header-text" : "active-post-header-about";
@@ -64,8 +74,9 @@ class Post extends React.Component {
               {showFullInfo && detailedInformation}
             </div>
             {activePost.metadata.img && <img src={activePost.metadata.img} alt="bkg" className={postHeaderImgClassName} />}
-            <img alt="next" src={nextBtn} className="active-post-btn-next" onClick={this.nextItem}/>
-
+            <img alt="next" src={nextBtn} className="active-post-btn-next" onClick={this.nextItem} />
+            <img alt="next" src={saveBtn} className="active-post-btn-save" onClick={this.savePost} />
+            {btnActiveState && <img alt="next" src={saveBtnActive} className="active-post-btn-save" onClick={this.savePost} />}
          </div>
        );
       }

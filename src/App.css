@@ -411,7 +411,18 @@ button:focus {
   position: absolute;
   bottom: 0;
   display: block;
-  height: 4rem;
+  height: 3.87rem;
+  margin-bottom: -.1rem;
   right: 0;
-  left: 60%;
+  left: 50%;
+}
+
+.active-post-btn-save {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  height: 5rem;
+  right: 0;
+  left: 30%;
+  margin-bottom: -.7rem;
 }
