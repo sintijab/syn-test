@@ -335,8 +335,8 @@ button:focus {
   top: 2rem;
   position: absolute;
   z-index: 1;
-  border-radius: .8rem;
-  background: #f9f9f98c;
+  border-radius: .5rem;
+  background: #ffffff;
   text-align: left;
 }
 
@@ -404,4 +404,14 @@ button:focus {
 .active-post-header-title-active {
   background: #fffc00;
   border-radius: .4rem;
+}
+
+.active-post-btn-next {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  height: 4rem;
+  z-index: 1;
+  right: 0;
+  left: 60%;
 }

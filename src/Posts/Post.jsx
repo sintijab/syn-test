@@ -1,4 +1,5 @@
 import React from 'react';
+import nextBtn from '../img/arrow.png';
 
 class Post extends React.Component {
 
@@ -8,21 +9,31 @@ class Post extends React.Component {
     this.state = {
       activePost: null,
       showFullInfo: false,
+      activeIndex: null,
     }
     this.expandInfo = this.expandInfo.bind(this);
+    this.nextItem = this.nextItem.bind(this);
   }
 
   componentDidUpdate() {
     const { cosmic } = this.props;
     const { activePost } = this.state;
     if (cosmic && cosmic.posts && cosmic.posts.length && !activePost) {
-      this.setState({ activePost: cosmic.posts[0] });
+      this.setState({ activePost: cosmic.posts[0], activeIndex: 0 });
     }
   }
 
   expandInfo() {
     const { showFullInfo } = this.state;
     this.setState({ showFullInfo: !showFullInfo });
+  }
+
+  nextItem() {
+    const { cosmic } = this.props;
+    const { activePost, activeIndex } = this.state;
+    if (cosmic && cosmic.posts && cosmic.posts.length && activePost) {
+      this.setState({ activePost: cosmic.posts[activeIndex + 1], activeIndex: activeIndex + 1 })
+    }
   }
 
   render() {
@@ -44,6 +55,7 @@ class Post extends React.Component {
           </div>);
         return (
           <div className="active-post">
+            <img alt="next" src={nextBtn} className="active-post-btn-next" onClick={this.nextItem}/>
             <div className={postHeaderClassName} onClick={this.expandInfo}>
               <span className={postHeaderTextTitleClassName}>{activePost.title}</span>
               {showFullInfo && <br/>}
