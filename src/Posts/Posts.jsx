@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { getCookie, validateImgSource} from '../functions.js';
+import { signInAction, getCurrentLocation } from '../actions/signActions.js';
 import defaultPostImg1 from '../img/default01.png';
 import defaultPostImg2 from '../img/default02.png';
 import defaultPostImg3 from '../img/default02.png';
@@ -14,13 +16,16 @@ class Posts extends React.Component {
     this.state = {
       isMobile: !!(window.innerWidth < 479),
       loggedIn: !!(getCookie('val')),
+      fetchPosts: null,
       cosmic: null,
       imageIsValid: false,
     }
+    this.fetchPosts = this.fetchPosts.bind(this);
+  }
 
-    const _this = this;
-
-    if (_this.state.loggedIn && _this.state.isMobile) {
+  fetchPosts() {
+    const { loggedIn, isMobile, fetchPosts } = this.state;
+      const _this = this;
       axios.get(`https://api.cosmicjs.com/v1/c61d0730-8187-11e9-9862-534a432d9a60/objects`, {
         params: {
           type: 'tests'
@@ -44,7 +49,9 @@ class Posts extends React.Component {
             _this.setState({
               cosmic: {
                 posts: postItems,              },
-              loading: false
+              loading: false,
+              fetchPosts: true,
+              loggedIn: true,
             });
           }
         }
@@ -52,12 +59,25 @@ class Posts extends React.Component {
       .catch(function (error) {
         console.log(error)
       })
+  }
+
+  componentDidMount() {
+    const { loggedIn, isMobile, fetchPosts } = this.state;
+    if (loggedIn && isMobile && !fetchPosts) {
+      this.fetchPosts();
+    }
+  }
+
+  componentDidUpdate() {
+    const { signType } = this.props;
+    const { loggedIn, isMobile, fetchPosts } = this.state;
+    if (signType === 'LOGGED_IN' && isMobile && !fetchPosts) {
+      this.fetchPosts();
     }
   }
 
   render() {
     const { isMobile, loggedIn, cosmic, imageIsValid } = this.state;
-    const { expandInfo } = this.props;
       if (isMobile && loggedIn) {
         return (
           <div className="post-feed">
@@ -69,4 +89,10 @@ class Posts extends React.Component {
    }
 }
 
-export default Posts;
+const mapStateToProps = state => ({
+  error: state.error,
+  signType: state.signInStatus.type,
+})
+
+
+export default connect(mapStateToProps, { signInAction })(Posts);

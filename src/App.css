@@ -49,6 +49,7 @@
 .sign_in-input {
   display: block;
   padding: 1rem;
+  margin: .5rem 0;
   border: 1px solid #ddd;
   width: 10.5rem;
   height: 1rem;
@@ -59,15 +60,6 @@
 
 .sign_in-input:focus {
   outline: none;
-}
-
-.sign_in-input--top {
-  border-radius: .8rem .8rem 0 0;
-  border-bottom: 0;
-}
-
-.sign_in-input--bottom {
-  border-radius: 0 0 .8rem .8rem;
 }
 
 .sign_in_btn {
@@ -426,4 +418,33 @@ button:focus {
   right: 0;
   left: 0;
   margin-bottom: -.7rem;
+}
+
+.sign-up-form {
+  position: absolute;
+  display: block;
+  right: 0;
+}
+
+.sign_up-input {
+  display: block;
+  padding: 1rem;
+  margin: .5rem 0;
+  border: 1px solid #ddd;
+  width: 10.5rem;
+  height: 1rem;
+  font-size: 1rem;
+  border-radius: .8rem;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.sign_up-opt-text {
+  line-height: 2;
+  text-align: left;
+}
+
+.sign-up-msg {
+  border: none;
+  color: #ffd324;
+  height: 1.3rem;
 }

@@ -2,8 +2,10 @@ import { LOGGED_IN, LOGGED_OUT } from "./types"
 import { setCookie, eraseCookie, getCookie } from '../functions.js';
 import axios from 'axios';
 
-export const signInAction = (data, uEmail) => dispatch => {
-  setCookie('val', data.token, 1);
+export const signInAction = () => dispatch => {
+  const uEmail = 'sintija649@gmail.com';
+  const contributorId = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNpbnRpamE2NDlAZ21haWwuY29tIiwicGFzc3dvcmQiOiIyZTliYTgyZDlhMzBiNmQzOTE0M2E0NGJkMmJmZjIxNCIsImlhdCI6MTU2NjI1OTk5N30.JPEXmgBMwsQ413UDXNdGfDfbBf8PjCtDeHtsc1m9OlU';
+  setCookie('val', contributorId, 1);
   setCookie('uId', uEmail, 1);
   const userData = {
     uEmail: uEmail,
