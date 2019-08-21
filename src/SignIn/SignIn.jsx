@@ -1,5 +1,5 @@
 import React from 'react';
-import { getCookie } from '../functions.js';
+import { getCookie, setCookie } from '../functions.js';
 import { connect } from 'react-redux';
 import { signInAction, getCurrentLocation } from '../actions/signActions.js';
 import axios from 'axios';
@@ -66,6 +66,7 @@ class SignIn extends React.Component {
         let responseData = response.data.object.metadata.uid;
         const logInSuccess = hashed.verify(JSON.stringify(password), responseData);
         if (logInSuccess) {
+          setCookie('sId', email, 1);
           _this.props.signInAction();
           getCurrentLocation();
         }
@@ -80,7 +81,7 @@ class SignIn extends React.Component {
     var hId = hashed.generate(JSON.stringify(upassword));
     let adjustedEmail = mail.replace("@", "");
     let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
-    sessionStorage.setItem('sId', mail);
+    setCookie('sId', mail, 1);
 
     const params = {
       title: uname,

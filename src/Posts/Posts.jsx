@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { getCookie, validateImgSource} from '../functions.js';
-import { signInAction, getCurrentLocation } from '../actions/signActions.js';
+import { signInAction } from '../actions/signActions.js';
 import defaultPostImg1 from '../img/default01.png';
 import defaultPostImg2 from '../img/default02.png';
 import defaultPostImg3 from '../img/default02.png';
@@ -19,6 +19,8 @@ class Posts extends React.Component {
       fetchPosts: null,
       cosmic: null,
       imageIsValid: false,
+      activePost: null,
+      activeIndex: null,
     }
     this.fetchPosts = this.fetchPosts.bind(this);
   }
@@ -48,7 +50,10 @@ class Posts extends React.Component {
             })
             _this.setState({
               cosmic: {
-                posts: postItems,              },
+                posts: postItems,
+              },
+              activePost: postItems[0],
+              activeIndex: 0,
               loading: false,
               fetchPosts: true,
               loggedIn: true,
@@ -77,11 +82,11 @@ class Posts extends React.Component {
   }
 
   render() {
-    const { isMobile, loggedIn, cosmic, imageIsValid } = this.state;
+    const { isMobile, loggedIn, cosmic, imageIsValid, activePost, activeIndex } = this.state;
       if (isMobile && loggedIn) {
         return (
           <div className="post-feed">
-          <Post isMobile={isMobile} loggedIn={loggedIn} cosmic={cosmic} imageIsValid={imageIsValid} />
+          <Post isMobile={isMobile} loggedIn={loggedIn} cosmic={cosmic} imageIsValid={imageIsValid} firstPost={activePost} firstIndex={activeIndex} />
          </div>
        );
       }

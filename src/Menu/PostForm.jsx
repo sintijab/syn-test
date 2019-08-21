@@ -14,7 +14,7 @@ class PostForm extends React.Component{
       plan: '',
       info: '',
       city: getCookie('city'),
-      author: getCookie('uId'),
+      author: getCookie('sId'),
     }
 
     this.handleChange = this.handleChange.bind(this);

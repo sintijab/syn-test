@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
+import { signInAction } from '../actions/signActions.js';
 import arrowIconUp from '../img/arrow-up2.png';
 import arrowIconDown from '../img/arrow-down.png';
 import additionIcon from '../img/addition.png';
@@ -33,9 +35,13 @@ class Menu extends React.Component {
   }
 
   componentDidUpdate() {
-    const { menuVisible, displayOverlay } = this.state;
+    const { menuVisible, displayOverlay, loggedIn, isMobile } = this.state;
+    const { signType } = this.props;
     if (!menuVisible && displayOverlay) {
       this.setState({ displayOverlay: false });
+    }
+    if (signType === 'LOGGED_IN' && isMobile && !loggedIn) {
+      this.setState({ loggedIn: true });
     }
   }
 
@@ -88,4 +94,9 @@ class Menu extends React.Component {
    }
 }
 
-export default Menu;
+const mapStateToProps = state => ({
+  error: state.error,
+  signType: state.signInStatus.type,
+})
+
+export default connect(mapStateToProps, { signInAction })(Menu);
