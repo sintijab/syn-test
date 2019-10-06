@@ -28,18 +28,26 @@ class Posts extends React.Component {
   fetchPosts() {
     const { loggedIn, isMobile, fetchPosts } = this.state;
       const _this = this;
-      axios.get(`https://api.cosmicjs.com/v1/c61d0730-8187-11e9-9862-534a432d9a60/objects`, {
-        params: {
-          type: 'tests'
-        } })
-      .then(function (response) {
-        if (!response.data.objects) {
+      const Cosmic = require('cosmicjs')({
+        token: getCookie('val') // optional
+      })
+      Cosmic.getBuckets()
+      Cosmic.getBuckets()
+      .then(data => {
+        const bucket = Cosmic.bucket({
+          slug: data.buckets[0].slug,
+          read_key: data.buckets[0].api_access.read_key,
+        });
+      bucket.getObjects({
+        type: 'tests',
+    }).then(function (response) {
+        if (!response.objects) {
           _this.setState({
             error: true,
             loading: false
           })
         } else {
-          let postItems = response.data.objects || [];
+          let postItems = response.objects || [];
           if (postItems && postItems.length) {
             postItems.forEach(post => {
               const isSourceValid = validateImgSource(post.metadata.img);
@@ -64,6 +72,7 @@ class Posts extends React.Component {
       .catch(function (error) {
         console.log(error)
       })
+    })
   }
 
   componentDidMount() {
@@ -97,6 +106,7 @@ class Posts extends React.Component {
 const mapStateToProps = state => ({
   error: state.error,
   signType: state.signInStatus.type,
+  uData: state.signInStatus.uData
 })
 
 

@@ -6,7 +6,7 @@ import axios from 'axios';
 const hashed = require('password-hash');
 
 const Cosmic = require('cosmicjs')({
-  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9Ac3luNG55LmNvbSIsInBhc3N3b3JkIjoiMmU5YmE4MmQ5YTMwYjZkMzkxNDNhNDRiZDJiZmYyMTQiLCJpYXQiOjE1NjA1NTI4MzF9.12JEhTvZyDQA3pcQYpyLruKUMao1PRyrlPFPbhaUw3o'
+  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9Ac3luNG55LmNvbSIsInBhc3N3b3JkIjoiMmU5YmE4MmQ5YTMwYjZkMzkxNDNhNDRiZDJiZmYyMTQiLCJpYXQiOjE1NzAzOTI4MTN9.z-X-dCaFXxMKxjXBy46d9y62H3OMZKXM6qlcU1Q_Sf0'
 })
 
 class SignIn extends React.Component {
@@ -28,6 +28,7 @@ class SignIn extends React.Component {
       authNrSent: false,
       validateNr: '',
       signUpSuccess: null,
+      signInSuccess: null,
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -44,7 +45,9 @@ class SignIn extends React.Component {
     const value = target.value;
     const name = target.name;
         this.setState({
-            [name]: value
+            [name]: value,
+            signUpSuccess: null,
+            signInSuccess: null
         });
     }
 
@@ -52,29 +55,57 @@ class SignIn extends React.Component {
     event.preventDefault();
 
     const { email, password } = this.state;
-    let adjustedEmail = email.replace("@", "");
-    let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
-    const _this = this;
-    axios.get(`https://api.cosmicjs.com/v1/c61d0730-8187-11e9-9862-534a432d9a60/object/${emailEncoded}`)
-    .then(function (response) {
-      if (!response.data.object) {
-        this.setState({
-          error: true,
-          loading: false
+    if (Object.keys(email).length && Object.keys(password).length) {
+      let adjustedEmail = email.replace("@", "");
+      let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
+      const _this = this;
+      const Cosmic = require('cosmicjs')({
+        token: getCookie('val') // optional
+      })
+      Cosmic.getBuckets()
+      .then(data => {
+        const bucket = Cosmic.bucket({
+          slug: data.buckets[0].slug,
+          read_key: data.buckets[0].api_access.read_key,
         })
-      } else {
-        let responseData = response.data.object.metadata.uid;
-        const logInSuccess = hashed.verify(JSON.stringify(password), responseData);
-        if (logInSuccess) {
-          setCookie('sId', email, 1);
-          _this.props.signInAction();
-          getCurrentLocation();
+
+      bucket.getObject({
+        slug: emailEncoded,
+    }).then(function (response) {
+        if (!response.object) {
+          this.setState({
+            error: true,
+            loading: false
+          })
+        } else {
+          let responseData = response.object.metadata.uid;
+          _this.setState({
+            signInSuccess: true,
+          })
+          const logInSuccess = hashed.verify(JSON.stringify(password), responseData);
+          if (logInSuccess) {
+            setCookie('sId', email, 1);
+            _this.props.signInAction();
+            getCurrentLocation();
+          }
         }
-      }
+      })
+      .catch(function (error) {
+        console.log(error)
+        _this.setState({
+          signInSuccess: false,
+          email: '',
+          password: '',
+        })
+      })
     })
-    .catch(function (error) {
-      console.log(error)
-    })
+    } else {
+      this.setState({
+        signInSuccess: false,
+        email: '',
+        password: '',
+      })
+    }
   }
 
   sendUDetails(uname, mail, upassword) {
@@ -123,7 +154,7 @@ class SignIn extends React.Component {
     .then(data => {
       const bucket = Cosmic.bucket({
         slug: data.buckets[0].slug,
-        write_key: ''
+        write_key: data.buckets[0].api_access.write_key
       })
 
     bucket.addObject(params)
@@ -232,12 +263,12 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const { isMobile, loggedIn, email, password, signUpOverlay, signInOverlay, validationOverlay, uname, mail, upassword, validateNr, signUpSuccess } = this.state;
+    const { isMobile, loggedIn, email, password, signUpOverlay, signInOverlay, validationOverlay, uname, mail, upassword, validateNr, signUpSuccess, signInSuccess } = this.state;
     const { signType } = this.props;
 
     const signUpError = signUpSuccess === false;
     const h1 = `Thank you, ${uname}!`;
-    const h2 = `We have just sent to your email ${mail} vertification code,`;
+    const h2 = `We have just sent to your email ${mail} verification code,`;
     const h2_opt = `Please submit here:`;
     const validationForm = (
       <form onSubmit={this.validateUser} className="sign-up-form">
@@ -247,7 +278,7 @@ class SignIn extends React.Component {
         <span>{h2_opt}</span>
       </div>
       <input autoCorrect="off" autoCapitalize="off" type="number" name="validateNr" value={validateNr} onChange={this.handleChange} placeholder="" className="sign_in-input"/>
-      <button type="submit" value="Log In" className="sign_in-input sign_in_btn sign_in_btn-text">Submit</button>
+      <button type="submit" className="sign_in-input sign_in_btn sign_in_btn-text">Submit</button>
       <div className="sign_up-opt">or <span className="sign_up-text" onClick={this.displaySignInOverlay}>or Sign in</span></div>
     </form>
     )
@@ -267,11 +298,12 @@ class SignIn extends React.Component {
         {signUpOverlay && registerForm}
         {validationOverlay && validationForm}
         {signUpSuccess && <span className="sign_in-input sign-up-msg">Thank you! Registration has completed!</span>}
+        {signInSuccess === false && <span className="sign_in-input sign-up-msg">Log In failed, please try again!</span>}
           {signInOverlay &&
             <form onSubmit={this.handleSubmit} className="sign-up-form">
             <input autoCorrect="off" autoCapitalize="off" type="email" name="email" value={email} onChange={this.handleChange} placeholder="Mobile number or email" className="sign_in-input"/>
             <input autoCorrect="off" type="password" name="password" value={password} onChange={this.handleChange} placeholder="Password" className="sign_in-input"/>
-            <button type="submit" value="Log In" className="sign_in-input sign_in_btn sign_in_btn-text">Log In</button>
+            <button type="submit" className="sign_in-input sign_in_btn sign_in_btn-text">Log In</button>
             <div className="sign_up-opt">or <span className="sign_up-text" onClick={this.displaySignUpOverlay}>Create new account</span></div>
           </form>}
        </div>
@@ -283,7 +315,7 @@ class SignIn extends React.Component {
 const mapStateToProps = state => ({
   error: state.error,
   signType: state.signInStatus.type,
-  userData: state.signInStatus.uData,
+  uData: state.signInStatus.uData
 })
 
 export default connect(mapStateToProps, { signInAction })(SignIn);

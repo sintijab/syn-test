@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export const signInAction = () => dispatch => {
   const uEmail = 'sintija649@gmail.com';
-  const contributorId = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNpbnRpamE2NDlAZ21haWwuY29tIiwicGFzc3dvcmQiOiIyZTliYTgyZDlhMzBiNmQzOTE0M2E0NGJkMmJmZjIxNCIsImlhdCI6MTU2NjI1OTk5N30.JPEXmgBMwsQ413UDXNdGfDfbBf8PjCtDeHtsc1m9OlU';
+  const contributorId = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9Ac3luNG55LmNvbSIsInBhc3N3b3JkIjoiMmU5YmE4MmQ5YTMwYjZkMzkxNDNhNDRiZDJiZmYyMTQiLCJpYXQiOjE1NzAzOTI4MTN9.z-X-dCaFXxMKxjXBy46d9y62H3OMZKXM6qlcU1Q_Sf0';
   setCookie('val', contributorId, 1);
   const userData = {
     uEmail: uEmail,

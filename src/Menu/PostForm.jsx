@@ -20,6 +20,8 @@ class PostForm extends React.Component{
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getPeriodOptions = this.getPeriodOptions.bind(this);
+    this.editUserDetails = this.editUserDetails.bind(this);
+    this.getUserDetails = this.getUserDetails.bind(this);
 
     this.selected_font = React.createRef();
   }
@@ -31,12 +33,21 @@ class PostForm extends React.Component{
     this.setState({
         [name]: value,
     });
-    }
+  }
 
   handleSubmit(event) {
     event.preventDefault();
     const { title, about, imgurl, period, plan, info, city, author } = this.state;
     const { submit } = this.props;
+
+    let date = new Date();
+    let dd = String(date.getDate()).padStart(2, '0');
+    let mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = date.getFullYear();
+
+    date = mm + '/' + dd + '/' + yyyy;
+    const postId = `${title}${author}${date}`;
+
     const params = {
       title: title,
       type_slug: 'tests',
@@ -92,6 +103,20 @@ class PostForm extends React.Component{
           type: 'text',
           children: null
         },
+        {
+          value: date,
+          key: 'date',
+          title: 'Added',
+          type: 'text',
+          children: null
+        },
+        {
+          value: postId,
+          key: 'postId',
+          title: 'postId',
+          type: 'text',
+          children: null
+        },
       ],
       options: {
         slug_field: false
@@ -105,7 +130,7 @@ class PostForm extends React.Component{
     .then(data => {
       const bucket = Cosmic.bucket({
         slug: data.buckets[0].slug,
-        write_key: ''
+        write_key: data.buckets[0].api_access.write_key,
       })
 
     bucket.addObject(params)
@@ -119,6 +144,7 @@ class PostForm extends React.Component{
         info: '',
       });
       submit(true)
+      this.getUserDetails(postId);
     })
     .catch(err => {
       console.log(err)
@@ -128,6 +154,62 @@ class PostForm extends React.Component{
       console.log(err)
     })
     }
+  }
+
+  getUserDetails(postId) {
+    const _this = this;
+    const Cosmic = require('cosmicjs')({
+      token: getCookie('val') // optional
+    })
+    Cosmic.getBuckets()
+    .then(data => {
+      let bucket = Cosmic.bucket({
+        slug: data.buckets[0].slug,
+        read_key: data.buckets[0].api_access.read_key
+      })
+      let mail = getCookie('sId');
+      let adjustedEmail = mail.replace("@", "");
+      let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
+      bucket.getObject({
+        slug: emailEncoded
+      }).then(userData => {
+        _this.editUserDetails(userData, postId);
+      }).catch(err => {
+        console.log(err)
+      })
+    })
+  }
+
+  editUserDetails(userData, postId) {
+    const Cosmic = require('cosmicjs')({
+      token: getCookie('val') // optional
+    })
+    Cosmic.getBuckets()
+    .then(data => {
+      let bucket = Cosmic.bucket({
+        slug: data.buckets[0].slug,
+        write_key: data.buckets[0].api_access.write_key
+      })
+      let mail = getCookie('sId');
+      let adjustedEmail = mail.replace("@", "");
+      let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
+      const userPostIds = userData.object.metafields.filter(obj => obj.key === 'submittedPostIds');
+      const newSubmittedPosts = userPostIds.length ? `${userPostIds[0].value}, ${postId}` : `${postId}`;
+      bucket.editObject({
+        slug: emailEncoded,
+        metafields: [{
+            value: newSubmittedPosts,
+            key: 'submittedPostIds',
+            title: 'submittedPostIds',
+            type: 'text',
+            children: null
+        }]
+      }).then(data => {
+        console.log(data)
+      }).catch(err => {
+        console.log(err)
+      })
+    })
   }
 
   toggleOverlay() {
