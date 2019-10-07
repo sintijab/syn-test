@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getCookie, validateImgSource} from '../functions.js';
 import { signInAction } from '../actions/signActions.js';
+import { fetchPostAction } from '../actions/postActions.js';
 import defaultPostImg1 from '../img/default01.png';
 import defaultPostImg2 from '../img/default02.png';
 import defaultPostImg3 from '../img/default02.png';
@@ -31,7 +32,6 @@ class Posts extends React.Component {
       const Cosmic = require('cosmicjs')({
         token: getCookie('val') // optional
       })
-      Cosmic.getBuckets()
       Cosmic.getBuckets()
       .then(data => {
         const bucket = Cosmic.bucket({
@@ -66,6 +66,7 @@ class Posts extends React.Component {
               fetchPosts: true,
               loggedIn: true,
             });
+            _this.props.fetchPostAction(postItems);
           }
         }
       })
@@ -110,4 +111,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps, { signInAction })(Posts);
+export default connect(mapStateToProps, { signInAction, fetchPostAction })(Posts);

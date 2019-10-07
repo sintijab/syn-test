@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
 import { signInAction } from '../actions/signActions.js';
+import { fetchPostAction, getPostsAction } from '../actions/postActions.js';
 import arrowIconUp from '../img/arrow-up2.png';
 import arrowIconDown from '../img/arrow-down.png';
 import additionIcon from '../img/addition.png';
@@ -42,6 +43,7 @@ class Menu extends React.Component {
     }
     if (signType === 'LOGGED_IN' && isMobile && !loggedIn) {
       this.setState({ loggedIn: true });
+      this.getUserPosts();
     }
   }
 
@@ -86,7 +88,7 @@ class Menu extends React.Component {
                 <img src={checkmark} alt="success" className="submit-success-img"/>
                   Thank you! Your post has been published successfully.
                 </div>}
-              {menuVisible && displayOverlay && <PostForm toggleOverlay={this.toggleOverlay} submit={this.postSubmitted}/>}
+              {menuVisible && displayOverlay && <PostForm toggleOverlay={this.toggleOverlay} submit={this.postSubmitted} />}
          </div>
        );
       }
@@ -97,6 +99,7 @@ class Menu extends React.Component {
 const mapStateToProps = state => ({
   error: state.error,
   signType: state.signInStatus.type,
+  postsState: state.postsState.postsData,
 })
 
-export default connect(mapStateToProps, { signInAction })(Menu);
+export default connect(mapStateToProps, { signInAction, fetchPostAction, getPostsAction })(Menu);

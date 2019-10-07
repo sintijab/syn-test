@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
+import { getPostsAction } from '../actions/postActions.js';
 
 class PostForm extends React.Component{
 
@@ -184,6 +186,7 @@ class PostForm extends React.Component{
     const Cosmic = require('cosmicjs')({
       token: getCookie('val') // optional
     })
+    const _this = this;
     Cosmic.getBuckets()
     .then(data => {
       let bucket = Cosmic.bucket({
@@ -205,7 +208,7 @@ class PostForm extends React.Component{
             children: null
         }]
       }).then(data => {
-        console.log(data)
+        _this.props.getPostsAction();
       }).catch(err => {
         console.log(err)
       })
@@ -266,4 +269,8 @@ class PostForm extends React.Component{
     }
   }
 
-export default PostForm;
+const mapStateToProps = state => ({
+  postsState: state.postsState.postsData,
+})
+
+export default connect(mapStateToProps, { getPostsAction })(PostForm);

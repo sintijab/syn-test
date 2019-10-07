@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import signReducer from './signReducer';
+import postReducer from './postReducer';
 
 const appReducer = combineReducers({
-  signInStatus: signReducer
+  signInStatus: signReducer,
+  postsState: postReducer,
 });
 
 export default (state, action) => {

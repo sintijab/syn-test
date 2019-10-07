@@ -9,3 +9,6 @@ export const DELETE_PROJECT = "DELETE_PROJECT"
 
 export const SHOW_OVERLAY = "SHOW_OVERLAY"
 export const CLOSE_OVERLAY = "CLOSE_OVERLAY"
+
+export const POSTS_FETCHED = "POSTS_FETCHED"
+export const POSTS_UPDATED = "POSTS_UPDATED"
