@@ -10,6 +10,7 @@ import menuIcon from '../img/menu2.png';
 import checkmark from '../img/checkmark.png';
 import Tabs from './Tabs.jsx';
 import PostForm from './PostForm';
+import PostsPreview from './PostsPreview';
 
 class Menu extends React.Component {
 
@@ -17,6 +18,7 @@ class Menu extends React.Component {
     super(props)
     this.state = {
       loggedIn: !!(getCookie('val')),
+      userId: getCookie('sId'),
       isMobile: !!(window.innerWidth < 479),
       menuVisible: false,
       displayOverlay: false,
@@ -43,8 +45,11 @@ class Menu extends React.Component {
     }
     if (signType === 'LOGGED_IN' && isMobile && !loggedIn) {
       this.setState({ loggedIn: true });
-      this.getUserPosts();
     }
+  }
+
+  componentDidMount() {
+
   }
 
   toggleOverlay() {
@@ -64,7 +69,9 @@ class Menu extends React.Component {
   }
 
   render() {
-    const { isMobile, loggedIn, menuVisible, displayOverlay, postSubmitted } = this.state;
+    const { isMobile, loggedIn, menuVisible, displayOverlay, postSubmitted, userId } = this.state;
+    const { postsState = [] } = this.props;
+    const usersPosts = postsState.length ? postsState.filter(obj => obj.metadata.author === userId) : [];
     const menuClass = menuVisible ? "menu_nav--open" : "menu_nav--open menu_nav--closed";
     const menuHeaderClass = !menuVisible ? "menu menu--closed" : "menu";
       if (isMobile && loggedIn) {
@@ -81,6 +88,7 @@ class Menu extends React.Component {
                      <img alt="menu" src={arrowIconDown} className="arrow_icon--menu" />
                   </div>}
                 {menuVisible && <Tabs isMobile loggedIn menuVisible />}
+                {menuVisible && usersPosts.length && <PostsPreview posts={usersPosts} />}
               </div>
               {menuVisible && <img alt="menu" src={additionIcon} className="addition-icon" onClick={this.toggleOverlay}/>}
               {menuVisible && postSubmitted && !displayOverlay &&
@@ -89,6 +97,7 @@ class Menu extends React.Component {
                   Thank you! Your post has been published successfully.
                 </div>}
               {menuVisible && displayOverlay && <PostForm toggleOverlay={this.toggleOverlay} submit={this.postSubmitted} />}
+
          </div>
        );
       }

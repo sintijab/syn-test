@@ -448,3 +448,32 @@ button:focus {
   color: #ffd324;
   height: 1.3rem;
 }
+
+.preview {
+  position: absolute;
+  top: 6rem;
+  background: #fff;
+}
+
+.preview_post {
+  display: block;
+  height: 4rem;
+  overflow-y: hidden;
+  width: 98%;
+  margin: .7rem auto;
+  padding: .5rem 0 0;
+  border-radius: .5rem;
+}
+
+.preview_post-img {
+  width: 100vW;
+  border-top: .5px solid #f5f5f5;
+}
+
+.preview_post-date {
+  float: right;
+}
+
+.preview_post-title {
+  float: left;
+}
