@@ -80,20 +80,21 @@ class SignIn extends React.Component {
         } else {
           let responseData = response.object.metadata.uid;
 
-          if(response.object.metadata.storedPostIds) {
-            localStorage.set('storedPostIds', response.object.metadata.storedPostIds);
-          } else if (response.object.metadata.submittedPostIds) {
-            localStorage.set('submittedPostIds', response.object.metadata.submittedPostIds);
-          }
-
           _this.setState({
             signInSuccess: true,
           })
           const logInSuccess = hashed.verify(JSON.stringify(password), responseData);
+          debugger;
           if (logInSuccess) {
             setCookie('sId', email, 1);
             _this.props.signInAction();
             getCurrentLocation();
+            debugger;
+            if(response.object.metadata.storedPostIds) {
+              localStorage.setItem('storedPostIds', response.object.metadata.storedPostIds);
+            } else if (response.object.metadata.submittedPostIds) {
+              localStorage.setItem('submittedPostIds', response.object.metadata.submittedPostIds);
+            }
           }
         }
       })

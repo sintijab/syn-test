@@ -79,16 +79,7 @@ class Post extends React.Component {
       } else {
         newStoredPosts = `${postId}`;
       }
-      let newLocallyStoredPosts = null;
-      const localStoredPosts = localStorage.getItem('storedPostIds');
-      if (localStoredPosts) {
-        newLocallyStoredPosts = `${localStoredPosts}, ${newStoredPosts}`;
-      } else {
-        newLocallyStoredPosts = `${newStoredPosts}`;
-      }
-      if (newLocallyStoredPosts) {
-        localStorage.setItem('storedPostIds', newLocallyStoredPosts);
-      }
+      localStorage.setItem('storedPostIds', newStoredPosts);
 
 
       bucket.editObject({
