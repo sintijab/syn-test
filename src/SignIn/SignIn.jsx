@@ -84,12 +84,10 @@ class SignIn extends React.Component {
             signInSuccess: true,
           })
           const logInSuccess = hashed.verify(JSON.stringify(password), responseData);
-          debugger;
           if (logInSuccess) {
             setCookie('sId', email, 1);
             _this.props.signInAction();
             getCurrentLocation();
-            debugger;
             if(response.object.metadata.storedPostIds) {
               localStorage.setItem('storedPostIds', response.object.metadata.storedPostIds);
             } else if (response.object.metadata.submittedPostIds) {
