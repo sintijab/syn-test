@@ -203,6 +203,18 @@ class PostForm extends React.Component{
 
       const newSubmittedPosts = userSubmittedPostIds.length ? `${userSubmittedPostIds[0].value}, ${postId}` : `${postId}`;
       const userStoredPosts = userStoredPostIds.length ? `${userSubmittedPostIds[0].value}` : ``;
+
+      let newLocallySubmittedPosts = null;
+      const localStoredPosts = localStorage.getItem('submittedPostIds');
+      if (localStoredPosts) {
+        newLocallySubmittedPosts = `${localStoredPosts}, ${newSubmittedPosts}`;
+      } else {
+        newLocallySubmittedPosts = `${newSubmittedPosts}`;
+      }
+      if (newLocallySubmittedPosts) {
+        localStorage.set('submittedPostIds', newLocallySubmittedPosts);
+      }
+
       if (userIdMetadield.length && userNameMetadield.length && userEmailMetadield.length) {
         bucket.editObject({
           slug: emailEncoded,
