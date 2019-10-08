@@ -58,32 +58,67 @@ class Post extends React.Component {
       let adjustedEmail = mail.replace("@", "");
       let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
       const userPostIds = userData.object.metafields.filter(obj => obj.key === 'storedPostIds');
-      let newSubmittedPosts =  ``;
+      const userIdMetadield = userData.object.metafields.filter(obj => obj.key === 'uid');
+      const userNameMetadield = userData.object.metafields.filter(obj => obj.key === 'uname');
+      const userEmailMetadield = userData.object.metafields.filter(obj => obj.key === 'email');
+      const userSubmittedPostIds = userData.object.metafields.filter(obj => obj.key === 'submittedPostIds');
+
+      let newStoredPosts =  ``;
+      const userSubmittedPosts = userSubmittedPostIds.length ? `${userSubmittedPostIds[0].value}` : ``;
       if (userPostIds.length) {
-        let newSubmittedPosts = `${userPostIds[0].value}`;
+        let newStoredPosts = `${userPostIds[0].value}`;
         let replaceableId = `${postId}`;
         let replaceableIdList = `, ${postId}`;
-        if (newSubmittedPosts.indexOf(replaceableIdList) !== -1 && !storePostToAccount) {
-          newSubmittedPosts.replace(replaceableIdList, ``);
-        } else if (newSubmittedPosts.indexOf(replaceableId) !== -1 && !storePostToAccount) {
-          newSubmittedPosts.replace(replaceableId, ``);
+        if (newStoredPosts.indexOf(replaceableIdList) !== -1 && !storePostToAccount) {
+          newStoredPosts.replace(replaceableIdList, ``);
+        } else if (newStoredPosts.indexOf(replaceableId) !== -1 && !storePostToAccount) {
+          newStoredPosts.replace(replaceableId, ``);
         } else if (storePostToAccount) {
-          newSubmittedPosts = `${userPostIds[0].value}, ${postId}`;
+          newStoredPosts = `${userPostIds[0].value}, ${postId}`;
         }
       } else {
-        newSubmittedPosts = `${postId}`;
+        newStoredPosts = `${postId}`;
       }
 
 
       bucket.editObject({
         slug: emailEncoded,
-        metafields: [{
-            value: newSubmittedPosts,
-            key: 'storedPostIds',
-            title: 'storedPostIds',
+        metafields: [
+          {
+            value: userSubmittedPosts,
+            key: 'submittedPostIds',
+            title: 'submittedPostIds',
             type: 'text',
             children: null
-        }]
+          },
+          {
+            value: newStoredPosts,
+            key: 'storedPostIds',
+            title: 'submittedPostIds',
+            type: 'text',
+            children: null
+          },
+          {
+            value: userIdMetadield[0].value,
+            key: 'uid',
+            title: 'uid',
+            type: 'text',
+            children: null
+          },
+          {
+            value: userNameMetadield[0].value,
+            key: 'uname',
+            title: 'userName',
+            type: 'text',
+            children: null
+          },
+          {
+            value: userEmailMetadield[0].value,
+            key: 'email',
+            title: 'userMail',
+            type: 'text',
+            children: null
+          }]
       }).catch(err => {
         console.log(err)
       })

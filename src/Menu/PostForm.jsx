@@ -196,7 +196,7 @@ class PostForm extends React.Component{
       let adjustedEmail = mail.replace("@", "");
       let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
       const userSubmittedPostIds = userData.object.metafields.filter(obj => obj.key === 'submittedPostIds');
-      const userStoredPostIds = userData.object.metafields.filter(obj => obj.key === 'submittedPostIds');
+      const userStoredPostIds = userData.object.metafields.filter(obj => obj.key === 'storedPostIds');
       const userIdMetadield = userData.object.metafields.filter(obj => obj.key === 'uid');
       const userNameMetadield = userData.object.metafields.filter(obj => obj.key === 'uname');
       const userEmailMetadield = userData.object.metafields.filter(obj => obj.key === 'email');
