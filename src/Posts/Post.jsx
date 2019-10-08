@@ -87,7 +87,7 @@ class Post extends React.Component {
         newLocallyStoredPosts = `${newStoredPosts}`;
       }
       if (newLocallyStoredPosts) {
-        localStorage.set('storedPostIds', newLocallyStoredPosts);
+        localStorage.setItem('storedPostIds', newLocallyStoredPosts);
       }
 
 

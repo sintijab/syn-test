@@ -206,13 +206,13 @@ class PostForm extends React.Component{
 
       let newLocallySubmittedPosts = null;
       const localStoredPosts = localStorage.getItem('submittedPostIds');
-      if (localStoredPosts) {
+      if (localStoredPosts && localStoredPosts.indexOf(newSubmittedPosts) !== -1) {
         newLocallySubmittedPosts = `${localStoredPosts}, ${newSubmittedPosts}`;
-      } else {
+      } else if (!localStoredPosts) {
         newLocallySubmittedPosts = `${newSubmittedPosts}`;
       }
       if (newLocallySubmittedPosts) {
-        localStorage.set('submittedPostIds', newLocallySubmittedPosts);
+        localStorage.setItem('submittedPostIds', newLocallySubmittedPosts);
       }
 
       if (userIdMetadield.length && userNameMetadield.length && userEmailMetadield.length) {
