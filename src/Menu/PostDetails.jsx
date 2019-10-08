@@ -1,4 +1,8 @@
 import React from 'react';
+import { validateImgSource } from '../functions.js';
+import defaultPostImg1 from '../img/default01.png';
+import defaultPostImg2 from '../img/default02.png';
+import defaultPostImg3 from '../img/default02.png';
 
 class PostDetails extends React.Component {
 
@@ -23,7 +27,12 @@ class PostDetails extends React.Component {
 
     const postTitle = data.title || '';
     const postDate = data.metadata.date || '';
-    const postImage = data.metadata.img || '';
+    const isSourceValid = validateImgSource(data.metadata.img);
+    let postImage = data.metadata.img || '';
+    if (!isSourceValid) {
+      const defaultNumber = Math.floor((Math.random() * 3) + 1);
+      postImage = defaultNumber === 1 ? defaultPostImg1 : defaultNumber === 2 ? defaultPostImg2 : defaultPostImg3;
+    }
     const postDescription = data.metadata.about || '';
 
     return (

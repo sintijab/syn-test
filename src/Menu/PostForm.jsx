@@ -186,7 +186,6 @@ class PostForm extends React.Component{
     const Cosmic = require('cosmicjs')({
       token: getCookie('val') // optional
     })
-    const _this = this;
     Cosmic.getBuckets()
     .then(data => {
       let bucket = Cosmic.bucket({
@@ -207,12 +206,11 @@ class PostForm extends React.Component{
             type: 'text',
             children: null
         }]
-      }).then(data => {
-        _this.props.getPostsAction();
       }).catch(err => {
         console.log(err)
       })
     })
+    this.props.getPostsAction();
   }
 
   toggleOverlay() {

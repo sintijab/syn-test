@@ -255,6 +255,14 @@ class SignIn extends React.Component {
     this.setState({ signInOverlay: true, signUpOverlay: false, validationOverlay: false });
   }
 
+  componentDidUpdate() {
+    const { loggedIn, isMobile } = this.state;
+    const { signType } = this.props;
+    if (signType === 'LOGGED_IN' && isMobile && !loggedIn) {
+      this.setState({ loggedIn: true });
+    }
+  }
+
   componentDidMount() {
     const { isMobile } = this.state;
     if (!isMobile && window.innerWidth < 479) {

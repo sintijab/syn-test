@@ -48,10 +48,6 @@ class Menu extends React.Component {
     }
   }
 
-  componentDidMount() {
-
-  }
-
   toggleOverlay() {
     const { displayOverlay, postSubmitted } = this.state;
     this.setState({ displayOverlay: !displayOverlay });
