@@ -217,7 +217,7 @@ class PostForm extends React.Component{
             {
               value: userStoredPosts,
               key: 'storedPostIds',
-              title: 'submittedPostIds',
+              title: 'storedPostIds',
               type: 'text',
               children: null
             },

@@ -94,7 +94,7 @@ class Post extends React.Component {
           {
             value: newStoredPosts,
             key: 'storedPostIds',
-            title: 'submittedPostIds',
+            title: 'storedPostIds',
             type: 'text',
             children: null
           },
