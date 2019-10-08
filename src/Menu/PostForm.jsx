@@ -195,20 +195,57 @@ class PostForm extends React.Component{
       let mail = getCookie('sId');
       let adjustedEmail = mail.replace("@", "");
       let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
-      const userPostIds = userData.object.metafields.filter(obj => obj.key === 'submittedPostIds');
-      const newSubmittedPosts = userPostIds.length ? `${userPostIds[0].value}, ${postId}` : `${postId}`;
-      bucket.editObject({
-        slug: emailEncoded,
-        metafields: [{
-            value: newSubmittedPosts,
-            key: 'submittedPostIds',
-            title: 'submittedPostIds',
-            type: 'text',
-            children: null
-        }]
-      }).catch(err => {
-        console.log(err)
-      })
+      const userSubmittedPostIds = userData.object.metafields.filter(obj => obj.key === 'submittedPostIds');
+      const userStoredPostIds = userData.object.metafields.filter(obj => obj.key === 'submittedPostIds');
+      const userIdMetadield = userData.object.metafields.filter(obj => obj.key === 'uid');
+      const userNameMetadield = userData.object.metafields.filter(obj => obj.key === 'uname');
+      const userEmailMetadield = userData.object.metafields.filter(obj => obj.key === 'email');
+
+      const newSubmittedPosts = userSubmittedPostIds.length ? `${userSubmittedPostIds[0].value}, ${postId}` : `${postId}`;
+      const userStoredPosts = userStoredPostIds.length ? `${userSubmittedPostIds[0].value}` : ``;
+      if (userIdMetadield.length && userNameMetadield.length && userEmailMetadield.length) {
+        bucket.editObject({
+          slug: emailEncoded,
+          metafields: [
+            {
+              value: newSubmittedPosts,
+              key: 'submittedPostIds',
+              title: 'submittedPostIds',
+              type: 'text',
+              children: null
+            },
+            {
+              value: userStoredPosts,
+              key: 'storedPostIds',
+              title: 'submittedPostIds',
+              type: 'text',
+              children: null
+            },
+            {
+              value: userIdMetadield[0].value,
+              key: 'uid',
+              title: 'uid',
+              type: 'text',
+              children: null
+            },
+            {
+              value: userNameMetadield[0].value,
+              key: 'uname',
+              title: 'userName',
+              type: 'text',
+              children: null
+            },
+            {
+              value: userEmailMetadield[0].value,
+              key: 'email',
+              title: 'userMail',
+              type: 'text',
+              children: null
+            }]
+        }).catch(err => {
+          console.log(err)
+        })
+      }
     })
     this.props.getPostsAction();
   }

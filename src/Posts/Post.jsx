@@ -2,6 +2,7 @@ import React from 'react';
 import nextBtn from '../img/arrow.png';
 import saveBtn from '../img/like.png';
 import saveBtnActive from '../img/like2.png';
+import { getCookie } from '../functions.js';
 
 class Post extends React.Component {
 
@@ -17,6 +18,8 @@ class Post extends React.Component {
     this.expandInfo = this.expandInfo.bind(this);
     this.nextItem = this.nextItem.bind(this);
     this.savePost = this.savePost.bind(this);
+    this.getUserDetails = this.getUserDetails.bind(this);
+    this.editUserDetails = this.editUserDetails.bind(this);
   }
 
   componentDidUpdate() {
@@ -41,9 +44,87 @@ class Post extends React.Component {
     }
   }
 
+  editUserDetails(userData, postId, storePostToAccount) {
+    const Cosmic = require('cosmicjs')({
+      token: getCookie('val') // optional
+    })
+    Cosmic.getBuckets()
+    .then(data => {
+      let bucket = Cosmic.bucket({
+        slug: data.buckets[0].slug,
+        write_key: data.buckets[0].api_access.write_key
+      })
+      let mail = getCookie('sId');
+      let adjustedEmail = mail.replace("@", "");
+      let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
+      const userPostIds = userData.object.metafields.filter(obj => obj.key === 'storedPostIds');
+      let newSubmittedPosts =  ``;
+      if (userPostIds.length) {
+        let newSubmittedPosts = `${userPostIds[0].value}`;
+        let replaceableId = `${postId}`;
+        let replaceableIdList = `, ${postId}`;
+        if (newSubmittedPosts.indexOf(replaceableIdList) !== -1 && !storePostToAccount) {
+          newSubmittedPosts.replace(replaceableIdList, ``);
+        } else if (newSubmittedPosts.indexOf(replaceableId) !== -1 && !storePostToAccount) {
+          newSubmittedPosts.replace(replaceableId, ``);
+        } else if (storePostToAccount) {
+          newSubmittedPosts = `${userPostIds[0].value}, ${postId}`;
+        }
+      } else {
+        newSubmittedPosts = `${postId}`;
+      }
+
+
+      bucket.editObject({
+        slug: emailEncoded,
+        metafields: [{
+            value: newSubmittedPosts,
+            key: 'storedPostIds',
+            title: 'storedPostIds',
+            type: 'text',
+            children: null
+        }]
+      }).catch(err => {
+        console.log(err)
+      })
+    })
+    this.props.getPostsAction();
+  }
+
+  getUserDetails(postId, storePostToAccount) {
+    const _this = this;
+    const Cosmic = require('cosmicjs')({
+      token: getCookie('val') // optional
+    })
+    Cosmic.getBuckets()
+    .then(data => {
+      let bucket = Cosmic.bucket({
+        slug: data.buckets[0].slug,
+        read_key: data.buckets[0].api_access.read_key
+      })
+      let mail = getCookie('sId');
+      let adjustedEmail = mail.replace("@", "");
+      let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
+      bucket.getObject({
+        slug: emailEncoded
+      }).then(userData => {
+          _this.editUserDetails(userData, postId, storePostToAccount);
+      }).catch(err => {
+        console.log(err)
+      })
+    })
+  }
+
   savePost() {
-    const { btnActiveState } = this.state;
-    this.setState({ btnActiveState: !btnActiveState });
+    const { btnActiveState, activePost } = this.state;
+
+    if (activePost && !btnActiveState) {
+      this.setState({ btnActiveState: !btnActiveState });
+      this.getUserDetails(activePost._id, true);
+    } else if (activePost && btnActiveState) {
+      this.setState({ btnActiveState: !btnActiveState });
+      this.getUserDetails(activePost._id, false);
+    }
   }
 
 
