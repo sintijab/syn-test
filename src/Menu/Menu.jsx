@@ -19,14 +19,18 @@ class Menu extends React.Component {
     this.state = {
       loggedIn: !!(getCookie('val')),
       userId: getCookie('sId'),
+      userStoredPosts: localStorage.getItem('storedPostIds'),
       isMobile: !!(window.innerWidth < 479),
       menuVisible: false,
       displayOverlay: false,
       postSubmitted: false,
+      activeTab: null,
     }
     this.expandMenu = this.expandMenu.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
     this.postSubmitted = this.postSubmitted.bind(this);
+    this.setTabActive = this.setTabActive.bind(this);
+
   }
 
   expandMenu() {
@@ -34,6 +38,13 @@ class Menu extends React.Component {
     this.setState({ menuVisible: !menuVisible });
     if (postSubmitted) {
       this.setState({ postSubmitted: false });
+    }
+  }
+
+  setTabActive(type) {
+    const { activeTab } = this.state;
+    if (activeTab !== type) {
+      this.setState({ activeTab: type });
     }
   }
 
@@ -65,9 +76,10 @@ class Menu extends React.Component {
   }
 
   render() {
-    const { isMobile, loggedIn, menuVisible, displayOverlay, postSubmitted, userId } = this.state;
+    const { isMobile, loggedIn, menuVisible, displayOverlay, postSubmitted, userId, userStoredPosts, activeTab } = this.state;
     const { postsState = [] } = this.props;
-    const usersPosts = postsState.length ? postsState.filter(obj => obj.metadata.author === userId) : [];
+    const submittedPosts = postsState.length ? postsState.filter(obj => obj.metadata.author === userId) : [];
+    const storedPosts = postsState.length ? postsState.filter(obj => userStoredPosts.indexOf(obj.metadata.postId) !== -1) : [];
     const menuClass = menuVisible ? "menu_nav--open" : "menu_nav--open menu_nav--closed";
     const menuHeaderClass = !menuVisible ? "menu menu--closed" : "menu";
       if (isMobile && loggedIn) {
@@ -83,8 +95,9 @@ class Menu extends React.Component {
                   <div className="menu menu_header" onClick={this.expandMenu}>
                      <img alt="menu" src={arrowIconDown} className="arrow_icon--menu" />
                   </div>}
-                {menuVisible && <Tabs isMobile loggedIn menuVisible />}
-                {menuVisible && usersPosts.length && <PostsPreview posts={usersPosts} />}
+                {menuVisible && <Tabs isMobile loggedIn menuVisible setTabActive={this.setTabActive} activeTab={activeTab}/>}
+                {menuVisible && submittedPosts.length && activeTab === (null || 'stored') && <PostsPreview posts={storedPosts} />}
+                {menuVisible && submittedPosts.length && activeTab === 'submitted' && <PostsPreview posts={submittedPosts} />}
               </div>
               {menuVisible && <img alt="menu" src={additionIcon} className="addition-icon" onClick={this.toggleOverlay}/>}
               {menuVisible && postSubmitted && !displayOverlay &&

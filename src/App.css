@@ -170,6 +170,11 @@
   padding: .2rem;
 }
 
+.nav_icon-active {
+  background: #7d3fdc;
+  border-radius: 3rem;
+}
+
 .nav_list {
   width: 100vW;
   margin: 0;
