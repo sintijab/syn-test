@@ -1,8 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import nextBtn from '../img/arrow.png';
 import saveBtn from '../img/like.png';
 import saveBtnActive from '../img/like2.png';
 import { getCookie } from '../functions.js';
+import { getUserDetailsAction } from '../actions/profileActions.js';
 
 class Post extends React.Component {
 
@@ -14,19 +16,25 @@ class Post extends React.Component {
       showFullInfo: false,
       activeIndex: null,
       btnActiveState: false,
+      userData: null,
     }
     this.expandInfo = this.expandInfo.bind(this);
     this.nextItem = this.nextItem.bind(this);
     this.savePost = this.savePost.bind(this);
-    this.getUserDetails = this.getUserDetails.bind(this);
     this.editUserDetails = this.editUserDetails.bind(this);
   }
 
   componentDidUpdate() {
-    const { cosmic } = this.props;
-    const { activePost } = this.state;
+    const { cosmic, profileData } = this.props;
+    const { activePost, userData } = this.state;
     if (cosmic && cosmic.posts && cosmic.posts.length && !activePost) {
       this.setState({ activePost: cosmic.posts[0], activeIndex: 0 });
+    }
+
+    if (profileData.type === 'GET_PROFILE' && !userData) {
+      this.setState({
+        userData: profileData.profileDetails,
+      })
     }
   }
 
@@ -44,7 +52,8 @@ class Post extends React.Component {
     }
   }
 
-  editUserDetails(userData, postId, storePostToAccount) {
+  editUserDetails(postId, storePostToAccount) {
+    const { userData } = this.state;
     const Cosmic = require('cosmicjs')({
       token: getCookie('val') // optional
     })
@@ -127,39 +136,16 @@ class Post extends React.Component {
     this.props.getPostsAction();
   }
 
-  getUserDetails(postId, storePostToAccount) {
-    const _this = this;
-    const Cosmic = require('cosmicjs')({
-      token: getCookie('val') // optional
-    })
-    Cosmic.getBuckets()
-    .then(data => {
-      let bucket = Cosmic.bucket({
-        slug: data.buckets[0].slug,
-        read_key: data.buckets[0].api_access.read_key
-      })
-      let mail = getCookie('sId');
-      let adjustedEmail = mail.replace("@", "");
-      let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
-      bucket.getObject({
-        slug: emailEncoded
-      }).then(userData => {
-          _this.editUserDetails(userData, postId, storePostToAccount);
-      }).catch(err => {
-        console.log(err)
-      })
-    })
-  }
-
   savePost() {
     const { btnActiveState, activePost } = this.state;
+    this.props.getUserDetailsAction();
 
     if (activePost && !btnActiveState) {
       this.setState({ btnActiveState: !btnActiveState });
-      this.getUserDetails(activePost._id, true);
+      this.editUserDetails(activePost._id, true);
     } else if (activePost && btnActiveState) {
       this.setState({ btnActiveState: !btnActiveState });
-      this.getUserDetails(activePost._id, false);
+      this.editUserDetails(activePost._id, false);
     }
   }
 
@@ -203,4 +189,8 @@ class Post extends React.Component {
    }
 }
 
-export default Post;
+const mapStateToProps = state => ({
+  profileData: state.profileData,
+})
+
+export default connect(mapStateToProps, { getUserDetailsAction })(Post);

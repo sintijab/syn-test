@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
 import { signInAction } from '../actions/signActions.js';
 import { fetchPostAction, getPostsAction } from '../actions/postActions.js';
+import { getUserDetailsAction } from '../actions/profileActions.js';
 import arrowIconUp from '../img/arrow-up2.png';
 import arrowIconDown from '../img/arrow-down.png';
 import additionIcon from '../img/addition.png';
@@ -25,6 +26,7 @@ class Menu extends React.Component {
       displayOverlay: false,
       postSubmitted: false,
       activeTab: null,
+      userData: null,
     }
     this.expandMenu = this.expandMenu.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
@@ -49,14 +51,24 @@ class Menu extends React.Component {
   }
 
   componentDidUpdate() {
-    const { menuVisible, displayOverlay, loggedIn, isMobile } = this.state;
-    const { signType } = this.props;
+    const { menuVisible, displayOverlay, loggedIn, isMobile, userData } = this.state;
+    const { signType, profileData } = this.props;
     if (!menuVisible && displayOverlay) {
       this.setState({ displayOverlay: false });
     }
     if (signType === 'LOGGED_IN' && isMobile && !loggedIn) {
       this.setState({ loggedIn: true });
     }
+    if (profileData.type === 'GET_PROFILE' && !userData) {
+      this.setState({
+        userData: profileData.profileDetails,
+      })
+    }
+
+  }
+
+  componentDidMount() {
+    this.props.getUserDetailsAction();
   }
 
   toggleOverlay() {
@@ -118,6 +130,7 @@ const mapStateToProps = state => ({
   error: state.error,
   signType: state.signInStatus.type,
   postsState: state.postsState.postsData,
+  profileData: state.profileData,
 })
 
-export default connect(mapStateToProps, { signInAction, fetchPostAction, getPostsAction })(Menu);
+export default connect(mapStateToProps, { signInAction, fetchPostAction, getPostsAction, getUserDetailsAction })(Menu);

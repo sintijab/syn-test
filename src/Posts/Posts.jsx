@@ -22,71 +22,40 @@ class Posts extends React.Component {
       imageIsValid: false,
       activePost: null,
       activeIndex: null,
+      cosmic: {
+        posts: null,
+      }
     }
     this.fetchPosts = this.fetchPosts.bind(this);
   }
 
   fetchPosts() {
     const { loggedIn, isMobile, fetchPosts } = this.state;
-      const _this = this;
-      const Cosmic = require('cosmicjs')({
-        token: getCookie('val') // optional
-      })
-      Cosmic.getBuckets()
-      .then(data => {
-        const bucket = Cosmic.bucket({
-          slug: data.buckets[0].slug,
-          read_key: data.buckets[0].api_access.read_key,
-        });
-      bucket.getObjects({
-        type: 'tests',
-    }).then(function (response) {
-        if (!response.objects) {
-          _this.setState({
-            error: true,
-            loading: false
-          })
-        } else {
-          let postItems = response.objects || [];
-          if (postItems && postItems.length) {
-            postItems.forEach(post => {
-              const isSourceValid = validateImgSource(post.metadata.img);
-              if (!isSourceValid) {
-                const defaultNumber = Math.floor((Math.random() * 3) + 1);
-                post.metadata.img = defaultNumber === 1 ? defaultPostImg1 : defaultNumber === 2 ? defaultPostImg2 : defaultPostImg3;
-              }
-            })
-            _this.setState({
-              cosmic: {
-                posts: postItems,
-              },
-              activePost: postItems[0],
-              activeIndex: 0,
-              loading: false,
-              fetchPosts: true,
-              loggedIn: true,
-            });
-            _this.props.fetchPostAction(postItems);
-          }
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-    })
+    const { posts } = this.props;
+    const { postsData = [] } = posts;
+    this.setState({
+      cosmic: {
+        posts: posts,
+      },
+      activePost: postsData[0],
+      activeIndex: 0,
+      loading: false,
+      fetchPosts: true,
+      loggedIn: true,
+    });
   }
 
   componentDidMount() {
     const { loggedIn, isMobile, fetchPosts } = this.state;
     if (loggedIn && isMobile && !fetchPosts) {
-      this.fetchPosts();
+      this.props.fetchPostAction();
     }
   }
 
   componentDidUpdate() {
-    const { signType } = this.props;
+    const { signType, posts } = this.props;
     const { loggedIn, isMobile, fetchPosts } = this.state;
-    if (signType === 'LOGGED_IN' && isMobile && !fetchPosts) {
+    if (posts.type === 'POSTS_FETCHED' && isMobile && !fetchPosts) {
       this.fetchPosts();
     }
   }
@@ -107,7 +76,8 @@ class Posts extends React.Component {
 const mapStateToProps = state => ({
   error: state.error,
   signType: state.signInStatus.type,
-  uData: state.signInStatus.uData
+  uData: state.signInStatus.uData,
+  posts: state.postsState,
 })
 
 
