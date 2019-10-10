@@ -21,22 +21,6 @@ class Posts extends React.Component {
       activePost: null,
       activeIndex: null,
     }
-    this.fetchPosts = this.fetchPosts.bind(this);
-  }
-
-  fetchPosts() {
-    const { posts } = this.props;
-    const { postsData = [] } = posts;
-    this.setState({
-      cosmic: {
-        posts: posts,
-      },
-      activePost: postsData[0],
-      activeIndex: 0,
-      loading: false,
-      fetchPosts: true,
-      loggedIn: true,
-    });
   }
 
   componentDidMount() {
@@ -48,10 +32,25 @@ class Posts extends React.Component {
   }
 
   componentDidUpdate() {
-    const { posts } = this.props;
-    const { isMobile, fetchPosts } = this.state;
-    if (posts.type === 'POSTS_FETCHED' && isMobile && !fetchPosts) {
-      this.fetchPosts();
+    const { posts, signType } = this.props;
+    const { isMobile, fetchPosts, cosmic } = this.state;
+    const { postsData = [] } = posts;
+
+    if (signType === 'LOGGED_IN' && isMobile && !fetchPosts) {
+      this.props.fetchPostAction();
+      this.setState({ fetchPosts: true });
+    }
+    if (posts.type === 'POSTS_FETCHED' && !cosmic) {
+      this.setState({
+        cosmic: {
+          posts: posts,
+        },
+        activePost: postsData[0],
+        activeIndex: 0,
+        loading: false,
+        fetchPosts: true,
+        loggedIn: true,
+      });
     }
   }
 

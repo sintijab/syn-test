@@ -95,7 +95,7 @@ class Menu extends React.Component {
     const { isMobile, loggedIn, menuVisible, displayOverlay, postSubmitted, userId, userStoredPosts, activeTab } = this.state;
     const { postsState = [] } = this.props;
     const submittedPosts = postsState.length ? postsState.filter(obj => obj.metadata.author === userId) : [];
-    const storedPosts = postsState.length ? postsState.filter(obj => userStoredPosts.indexOf(obj.metadata.postId) !== -1) : [];
+    const storedPosts = postsState.length && userStoredPosts ? postsState.filter(obj => userStoredPosts.indexOf(obj.metadata.postId) !== -1) : [];
     const menuClass = menuVisible ? "menu_nav--open" : "menu_nav--open menu_nav--closed";
     const menuHeaderClass = !menuVisible ? "menu menu--closed" : "menu";
       if (isMobile && loggedIn) {

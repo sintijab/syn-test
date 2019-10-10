@@ -5,26 +5,28 @@ export const getUserDetailsAction = () => dispatch => {
 const Cosmic = require('cosmicjs')({
   token: getCookie('val') // optional
 })
-Cosmic.getBuckets()
-.then(data => {
-  let bucket = Cosmic.bucket({
-    slug: data.buckets[0].slug,
-    read_key: data.buckets[0].api_access.read_key
-  })
-  let mail = getCookie('sId');
-  let adjustedEmail = mail.replace("@", "");
-  let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
-  bucket.getObject({
-    slug: emailEncoded
-  }).then(userData => {
-    dispatch({
-     type: GET_PROFILE,
-     payload: userData
+let mail = getCookie('sId');
+if (mail) {
+  Cosmic.getBuckets()
+  .then(data => {
+    let bucket = Cosmic.bucket({
+      slug: data.buckets[0].slug,
+      read_key: data.buckets[0].api_access.read_key
     })
-  }).catch(err => {
-    console.log(err)
+    let adjustedEmail = mail.replace("@", "");
+    let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
+    bucket.getObject({
+      slug: emailEncoded
+    }).then(userData => {
+      dispatch({
+       type: GET_PROFILE,
+       payload: userData
+      })
+    }).catch(err => {
+      console.log(err)
+    })
   })
-})
+}
 }
 
 export const editUserDetailsAction = (userData, postId, storePostToAccount, storeType) => dispatch => {
@@ -122,4 +124,22 @@ export const editUserDetailsAction = (userData, postId, storePostToAccount, stor
       console.log(err)
     })
   })
+}
+
+const delete_cookie = (name) => {
+    document.cookie = name + '=;expires=Thu, 01 Jan 1990 00:00:01 GMT;';
+};
+
+export const clearAllStorage = () => {
+  const storedPostIds = localStorage.getItem('storedPostIds');
+  const submittedPostIds = localStorage.getItem('submittedPostIds');
+  !!storedPostIds && localStorage.removeItem('storedPostIds');
+  !!submittedPostIds && localStorage.removeItem('submittedPostIds');
+
+  const token = getCookie('val');
+  const mail = getCookie('sId');
+  !!token && delete_cookie('val');
+  !!mail && delete_cookie('sId');
+
+  window.location.reload(true);
 }

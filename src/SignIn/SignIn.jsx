@@ -1,7 +1,7 @@
 import React from 'react';
 import { getCookie, setCookie } from '../functions.js';
 import { connect } from 'react-redux';
-import { signInAction, getCurrentLocation } from '../actions/signActions.js';
+import { signInAction } from '../actions/signActions.js';
 import axios from 'axios';
 const hashed = require('password-hash');
 
@@ -56,55 +56,7 @@ class SignIn extends React.Component {
 
     const { email, password } = this.state;
     if (Object.keys(email).length && Object.keys(password).length) {
-      let adjustedEmail = email.replace("@", "");
-      let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
-      const _this = this;
-      const Cosmic = require('cosmicjs')({
-        token: getCookie('val') // optional
-      })
-      Cosmic.getBuckets()
-      .then(data => {
-        const bucket = Cosmic.bucket({
-          slug: data.buckets[0].slug,
-          read_key: data.buckets[0].api_access.read_key,
-        })
-
-      bucket.getObject({
-        slug: emailEncoded,
-    }).then(function (response) {
-        if (!response.object) {
-          this.setState({
-            error: true,
-            loading: false
-          })
-        } else {
-          let responseData = response.object.metadata.uid;
-
-          _this.setState({
-            signInSuccess: true,
-          })
-          const logInSuccess = hashed.verify(JSON.stringify(password), responseData);
-          if (logInSuccess) {
-            setCookie('sId', email, 1);
-            _this.props.signInAction();
-            getCurrentLocation();
-            if(response.object.metadata.storedPostIds) {
-              localStorage.setItem('storedPostIds', response.object.metadata.storedPostIds);
-            } else if (response.object.metadata.submittedPostIds) {
-              localStorage.setItem('submittedPostIds', response.object.metadata.submittedPostIds);
-            }
-          }
-        }
-      })
-      .catch(function (error) {
-        console.log(error)
-        _this.setState({
-          signInSuccess: false,
-          email: '',
-          password: '',
-        })
-      })
-    })
+      this.props.signInAction(email, password);
     } else {
       this.setState({
         signInSuccess: false,
@@ -264,8 +216,8 @@ class SignIn extends React.Component {
   componentDidUpdate() {
     const { loggedIn, isMobile } = this.state;
     const { signType } = this.props;
-    if (signType === 'LOGGED_IN' && isMobile && !loggedIn) {
-      this.setState({ loggedIn: true });
+    if (signType.type === 'LOGGED_IN' && isMobile && !loggedIn) {
+      this.setState({ loggedIn: true, signInSuccess: true });
     }
   }
 
@@ -305,7 +257,7 @@ class SignIn extends React.Component {
         <div className="sign_up-opt">or <span className="sign_up-text" onClick={this.displaySignInOverlay}>Sign in</span></div>
       </form>
     );
-    if (isMobile && !loggedIn && signType !== 'LOGGED_IN') {
+    if (isMobile && !loggedIn && signType.type !== 'LOGGED_IN') {
       return (
         <div className="sign_in" >
         {signUpError && signUpOverlay && <span>Registration has not completed, please try again</span>}
@@ -328,7 +280,7 @@ class SignIn extends React.Component {
 }
 const mapStateToProps = state => ({
   error: state.error,
-  signType: state.signInStatus.type,
+  signType: state.signInStatus,
   uData: state.signInStatus.uData
 })
 
