@@ -17,6 +17,12 @@ export default (state = initialState, action) => {
       type: action.type,
       postsData: action.payload
     }
+		case 'POST_ADDED':
+     return {
+ 			...state,
+       type: action.type,
+       postData: action.payload
+     }
   default:
    return state
  }

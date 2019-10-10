@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
-import { getPostsAction } from '../actions/postActions.js';
+import { getPostsAction, addPostAction } from '../actions/postActions.js';
 import { getUserDetailsAction, editUserDetailsAction } from '../actions/profileActions.js';
 
 class PostForm extends React.Component{
@@ -19,6 +19,7 @@ class PostForm extends React.Component{
       city: getCookie('city'),
       author: getCookie('sId'),
       userData: null,
+      postAdded: false,
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -38,8 +39,8 @@ class PostForm extends React.Component{
   }
 
   componentDidUpdate() {
-    const { profileData } = this.props;
-    const { userData } = this.state;
+    const { profileData, postAddedAction, submit } = this.props;
+    const { userData, postAdded, title, author, date } = this.state;
 
     if (profileData.type === 'GET_PROFILE' && userData !== profileData.profileDetails) {
       this.setState({
@@ -50,110 +51,12 @@ class PostForm extends React.Component{
         userData: profileData.profileUpdateDetails,
       })
     }
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    const { title, about, imgurl, period, plan, info, city, author, userData } = this.state;
-    const { submit } = this.props;
-    const _this = this;
-
-    let date = new Date();
-    let dd = String(date.getDate()).padStart(2, '0');
-    let mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
-    let yyyy = date.getFullYear();
-
-    date = mm + '/' + dd + '/' + yyyy;
-    const postId = `${title}${author}${date}`;
-
-    const params = {
-      title: title,
-      type_slug: 'tests',
-      content: '',
-      status: 'published',
-      metafields: [
-        {
-          value: about,
-          key: 'about',
-          title: 'About',
-          type: 'textarea',
-          children: null
-        },
-        {
-          value: imgurl,
-          key: 'img',
-          title: 'Image link',
-          type: 'text',
-          children: null
-        },
-        {
-          value: period,
-          key: 'period',
-          title: 'Display period',
-          type: 'text',
-          children: null
-        },
-        {
-          value: plan,
-          key: 'actions',
-          title: 'Actions',
-          type: 'textarea',
-          children: null
-        },
-        {
-          value: info,
-          key: 'info',
-          title: 'Additional info',
-          type: 'textarea',
-          children: null
-        },
-        {
-          value: city,
-          key: 'city',
-          title: 'City (range)',
-          type: 'text',
-          children: null
-        },
-        {
-          value: author,
-          key: 'author',
-          title: 'Author',
-          type: 'text',
-          children: null
-        },
-        {
-          value: date,
-          key: 'date',
-          title: 'Added',
-          type: 'text',
-          children: null
-        },
-        {
-          value: postId,
-          key: 'postId',
-          title: 'postId',
-          type: 'text',
-          children: null
-        },
-      ],
-      options: {
-        slug_field: false
-      }
-    }
-    if(!!getCookie('val')) {
-    const Cosmic = require('cosmicjs')({
-      token: getCookie('val') // optional
-    })
-    Cosmic.getBuckets()
-    .then(data => {
-      const bucket = Cosmic.bucket({
-        slug: data.buckets[0].slug,
-        write_key: data.buckets[0].api_access.write_key,
-      })
-
-    bucket.addObject(params)
-    .then(data => {
+    if (postAddedAction && postAddedAction.type === 'POST_ADDED' && !postAdded) {
+      const postId = `${title}${author}${date}`;
+      submit(true);
+      this.props.editUserDetailsAction(userData, postId, true, 'submit');
       this.setState({
+        postAdded: true,
         title: '',
         about: '',
         imgurl: '',
@@ -161,17 +64,24 @@ class PostForm extends React.Component{
         plan: '',
         info: '',
       });
-      submit(true)
-      _this.props.editUserDetailsAction(userData, postId, true, 'submit');
-    })
-    .catch(err => {
-      console.log(err)
-    })
-    })
-    .catch(err => {
-      console.log(err)
-    })
     }
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const { title, about, imgurl, period, plan, info, city, author, userData } = this.state;
+    const formData = {
+      title: title,
+      about: about,
+      imgurl: imgurl,
+      period: period,
+      plan: plan,
+      info:info,
+      city: city,
+      author: author,
+      userData: userData
+    };
+    this.props.addPostAction(formData);
   }
 
   toggleOverlay() {
@@ -231,6 +141,7 @@ class PostForm extends React.Component{
 const mapStateToProps = state => ({
   postsState: state.postsState.postsData,
   profileData: state.profileData,
+  postAddedAction: state.postsState,
 })
 
-export default connect(mapStateToProps, { getPostsAction, getUserDetailsAction, editUserDetailsAction })(PostForm);
+export default connect(mapStateToProps, { getPostsAction, getUserDetailsAction, editUserDetailsAction, addPostAction })(PostForm);

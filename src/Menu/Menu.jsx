@@ -60,16 +60,15 @@ class Menu extends React.Component {
       this.setState({ loggedIn: true });
     }
 
-    if (profileData.type === 'GET_PROFILE' && userData !== profileData.profileDetails) {
+    if (profileData.type === 'GET_PROFILE' && !userData) {
       this.setState({
         userData: profileData.profileDetails,
       })
-    } else if (profileData.type === 'PROFILE_UPDATED' && userData !== profileData.profileDetails) {
+    } else if (profileData.type === 'PROFILE_UPDATED' && !userData) {
       this.setState({
         userData: profileData.profileUpdateDetails,
       })
     }
-
   }
 
   componentDidMount() {

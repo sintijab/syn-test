@@ -12,6 +12,7 @@ export const CLOSE_OVERLAY = "CLOSE_OVERLAY"
 
 export const POSTS_FETCHED = "POSTS_FETCHED"
 export const POSTS_UPDATED = "POSTS_UPDATED"
+export const POST_ADDED = "POST_ADDED"
 
 export const GET_PROFILE = "GET_PROFILE"
 export const PROFILE_UPDATED = "PROFILE_UPDATED"

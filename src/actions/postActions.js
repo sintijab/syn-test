@@ -1,4 +1,4 @@
-import { POSTS_FETCHED, POSTS_UPDATED } from "./types"
+import { POSTS_FETCHED, POSTS_UPDATED, POST_ADDED } from "./types"
 import { getCookie, validateImgSource } from '../functions.js';
 import defaultPostImg1 from '../img/default01.png';
 import defaultPostImg2 from '../img/default02.png';
@@ -78,4 +78,118 @@ export const getPostsAction = () => dispatch => {
     console.log(error)
   })
 })
+}
+
+export const addPostAction = formData => dispatch => {
+  const { title, about, imgurl, period, plan, info, city, author, userData } = formData;
+  const _this = this;
+
+  let date = new Date();
+  let dd = String(date.getDate()).padStart(2, '0');
+  let mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
+  let yyyy = date.getFullYear();
+
+  date = mm + '/' + dd + '/' + yyyy;
+  const postId = `${title}${author}${date}`;
+
+  const params = {
+    title: title,
+    type_slug: 'tests',
+    content: '',
+    status: 'published',
+    metafields: [
+      {
+        value: about,
+        key: 'about',
+        title: 'About',
+        type: 'textarea',
+        children: null
+      },
+      {
+        value: imgurl,
+        key: 'img',
+        title: 'Image link',
+        type: 'text',
+        children: null
+      },
+      {
+        value: period,
+        key: 'period',
+        title: 'Display period',
+        type: 'text',
+        children: null
+      },
+      {
+        value: plan,
+        key: 'actions',
+        title: 'Actions',
+        type: 'textarea',
+        children: null
+      },
+      {
+        value: info,
+        key: 'info',
+        title: 'Additional info',
+        type: 'textarea',
+        children: null
+      },
+      {
+        value: city,
+        key: 'city',
+        title: 'City (range)',
+        type: 'text',
+        children: null
+      },
+      {
+        value: author,
+        key: 'author',
+        title: 'Author',
+        type: 'text',
+        children: null
+      },
+      {
+        value: date,
+        key: 'date',
+        title: 'Added',
+        type: 'text',
+        children: null
+      },
+      {
+        value: postId,
+        key: 'postId',
+        title: 'postId',
+        type: 'text',
+        children: null
+      },
+    ],
+    options: {
+      slug_field: false
+    }
+  }
+  if(!!getCookie('val')) {
+  const Cosmic = require('cosmicjs')({
+    token: getCookie('val') // optional
+  })
+  Cosmic.getBuckets()
+  .then(data => {
+    const bucket = Cosmic.bucket({
+      slug: data.buckets[0].slug,
+      write_key: data.buckets[0].api_access.write_key,
+    })
+
+  bucket.addObject(params)
+  .then(data => {
+    dispatch({
+     type: POST_ADDED,
+     payload: data
+    })
+  })
+  .catch(err => {
+    console.log(err)
+  })
+  })
+  .catch(err => {
+    console.log(err)
+  })
+  }
 }
