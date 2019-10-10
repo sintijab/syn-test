@@ -1,12 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getCookie, validateImgSource} from '../functions.js';
+import { getCookie } from '../functions.js';
 import { signInAction } from '../actions/signActions.js';
 import { fetchPostAction } from '../actions/postActions.js';
-import defaultPostImg1 from '../img/default01.png';
-import defaultPostImg2 from '../img/default02.png';
-import defaultPostImg3 from '../img/default02.png';
-import axios from 'axios';
+
 import Post from './Post';
 
 class Posts extends React.Component {
@@ -22,15 +19,11 @@ class Posts extends React.Component {
       imageIsValid: false,
       activePost: null,
       activeIndex: null,
-      cosmic: {
-        posts: null,
-      }
     }
     this.fetchPosts = this.fetchPosts.bind(this);
   }
 
   fetchPosts() {
-    const { loggedIn, isMobile, fetchPosts } = this.state;
     const { posts } = this.props;
     const { postsData = [] } = posts;
     this.setState({
@@ -53,8 +46,8 @@ class Posts extends React.Component {
   }
 
   componentDidUpdate() {
-    const { signType, posts } = this.props;
-    const { loggedIn, isMobile, fetchPosts } = this.state;
+    const { posts } = this.props;
+    const { isMobile, fetchPosts } = this.state;
     if (posts.type === 'POSTS_FETCHED' && isMobile && !fetchPosts) {
       this.fetchPosts();
     }
