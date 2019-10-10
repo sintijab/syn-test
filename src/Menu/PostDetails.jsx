@@ -40,7 +40,7 @@ class PostDetails extends React.Component {
         <div className="preview_post-date">{postDate}</div>
         <div className="preview_post-title">{postTitle}</div>
         {postImage && <img src={postImage} alt="bkg" className="preview_post-img"/>}
-        {showDetails && <div>{postDescription}</div>}
+        {showDetails && <div className="preview_post-text">{postDescription}</div>}
       </div>
      );
    }

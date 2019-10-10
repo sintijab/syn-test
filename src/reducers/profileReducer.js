@@ -17,11 +17,6 @@ export default (state = initialState, action) => {
  		  type: action.type,
       profileUpdateDetails: action.payload
     }
-		case 'STORED_POSTS_UPDATED':
-     return {
-  		 ...state,
-  		  type: action.type,
-     }
   default:
    return state
  }

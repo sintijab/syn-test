@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
 import { signInAction } from '../actions/signActions.js';
-import { fetchPostAction, getPostsAction } from '../actions/postActions.js';
-import { getUserDetailsAction, editUserDetailsAction, updateUserStoredPostsAction } from '../actions/profileActions.js';
+import { fetchPostAction, getPostsAction, updateUserStoredPostsAction } from '../actions/postActions.js';
+import { getUserDetailsAction, editUserDetailsAction } from '../actions/profileActions.js';
 import arrowIconUp from '../img/arrow-up2.png';
 import arrowIconDown from '../img/arrow-down.png';
 import additionIcon from '../img/addition.png';
@@ -29,8 +29,8 @@ class Menu extends React.Component {
       postsState: [],
       storedPosts: [],
       submittedPosts: [],
-      userStoredPosts: localStorage.getItem('storedPostIds'),
-      userSubmittedPosts: localStorage.getItem('submittedPostIds'),
+      userStoredPosts: [],
+      userSubmittedPosts: [],
     }
     this.expandMenu = this.expandMenu.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
@@ -80,7 +80,7 @@ class Menu extends React.Component {
 
 
   componentDidUpdate() {
-    const { menuVisible, displayOverlay, loggedIn, isMobile, userData, postsState, storedPosts, submittedPosts } = this.state;
+    const { menuVisible, displayOverlay, loggedIn, isMobile, userData, postsState, storedPosts, submittedPosts, userStoredPosts, userSubmittedPosts  } = this.state;
     const { signType, profileData, posts } = this.props;
     if (!menuVisible && displayOverlay) {
       this.setState({ displayOverlay: false });
@@ -93,7 +93,7 @@ class Menu extends React.Component {
       this.setState({
         userData: profileData.profileDetails,
       })
-    } else if (profileData.type === 'PROFILE_UPDATED' && !userData) {
+    } else if (profileData.type === 'PROFILE_UPDATED') {
       this.setState({
         userData: profileData.profileUpdateDetails,
       })
@@ -108,16 +108,16 @@ class Menu extends React.Component {
         loggedIn: true,
       });
     }
-    if (userData && menuVisible && postsState.length) {
-      const storedPostIds = userData.object.metadata.storedPostIds;
-      const submittedPostIds = userData.object.metadata.submittedPostIds;
+    if ((profileData.profileUpdateDetails || profileData.profileDetails) && postsState.length) {
+      const storeDataType = profileData.profileUpdateDetails ? profileData.profileUpdateDetails : profileData.profileDetails;
+      const storedPostIds = storeDataType.object.metadata.storedPostIds;
+      const submittedPostIds = storeDataType.object.metadata.submittedPostIds;
 
-      const updateUserStoredPosts = storedPostIds && storedPostIds.length && (storedPosts.length === 0 || profileData.type === 'PROFILE_UPDATED');
-      const updateUserSubmittedPosts = submittedPostIds && submittedPostIds.length && (submittedPosts.length === 0 || profileData.type === 'PROFILE_UPDATED');
-
+      const updateUserStoredPosts = storedPostIds && storedPostIds.length && (storedPosts.length === 0 || userStoredPosts.length !== storedPostIds.length);
+      const updateUserSubmittedPosts = submittedPostIds && submittedPostIds.length &&
+        (submittedPosts.length === 0 || userSubmittedPosts.length !== submittedPostIds.length);
       if (profileData && postsState && (updateUserStoredPosts || updateUserSubmittedPosts)) {
-        this.getUserPosts(userData, postsState);
-        this.props.updateUserStoredPostsAction();
+        this.getUserPosts(storeDataType, postsState);
       }
     }
   }

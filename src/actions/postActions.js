@@ -1,8 +1,8 @@
-import { POSTS_FETCHED, POSTS_UPDATED, POST_ADDED, NEXT_POST } from "./types"
+import { POSTS_FETCHED, POSTS_UPDATED, POST_ADDED, NEXT_POST, STORED_POSTS_UPDATED } from "./types"
 import { getCookie, validateImgSource } from '../functions.js';
-import defaultPostImg1 from '../img/default01.png';
-import defaultPostImg2 from '../img/default02.png';
-import defaultPostImg3 from '../img/default02.png';
+import defaultPostImg1 from '../img/default001.png';
+import defaultPostImg2 from '../img/default002.png';
+import defaultPostImg3 from '../img/default003.png';
 
 export const fetchPostAction = postsData => dispatch => {
   const Cosmic = require('cosmicjs')({
@@ -197,5 +197,11 @@ export const addPostAction = formData => dispatch => {
 export const nextPostAction = () => dispatch => {
   dispatch({
    type: NEXT_POST,
+  })
+}
+
+export const updateUserStoredPostsAction = () => dispatch => {
+  dispatch({
+   type: STORED_POSTS_UPDATED
   })
 }

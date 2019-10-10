@@ -40,10 +40,16 @@ class Post extends React.Component {
     }
     if (userData && activePost && nextPostState.postsState && nextPostState.postsState.type === 'NEXT_POST') {
       if (userData.object.metadata.storedPostIds.indexOf(activePost._id) !== -1 && !btnActiveState) {
-        this.setState({ btnActiveState: true });
+        this.setState({ btnActiveState: !btnActiveState });
       } else if (userData.object.metadata.storedPostIds.indexOf(activePost._id) === -1 && btnActiveState) {
-        this.setState({ btnActiveState: false });
+        this.setState({ btnActiveState: !btnActiveState });
       }
+    }
+    if (profileData.profileUpdateDetails && !btnActiveState) {
+
+      this.setState({ btnActiveState: !btnActiveState });
+    } else if (profileData.profileUpdateDetails && btnActiveState) {
+      this.setState({ btnActiveState: !btnActiveState });
     }
   }
 
@@ -64,12 +70,9 @@ class Post extends React.Component {
 
   savePost() {
     const { btnActiveState, activePost, userData } = this.state;
-
     if (activePost && !btnActiveState) {
-      this.setState({ btnActiveState: !btnActiveState });
       this.props.editUserDetailsAction(userData, activePost._id, true, 'store');
     } else if (activePost && btnActiveState) {
-      this.setState({ btnActiveState: !btnActiveState });
       this.props.editUserDetailsAction(userData, activePost._id, false, 'store');
     }
   }

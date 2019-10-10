@@ -28,6 +28,11 @@ export default (state = initialState, action) => {
   			...state,
         type: action.type,
       }
+		case 'STORED_POSTS_UPDATED':
+     return {
+  		 ...state,
+  		  type: action.type,
+     }
   default:
    return state
  }
