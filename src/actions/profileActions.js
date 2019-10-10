@@ -114,7 +114,6 @@ export const editUserDetailsAction = (userData, postId, storePostToAccount, stor
           children: null
         }]
     }).then(data => {
-      debugger;
       dispatch({
        type: PROFILE_UPDATED,
        payload: data
