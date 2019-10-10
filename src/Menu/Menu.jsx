@@ -56,20 +56,17 @@ class Menu extends React.Component {
   }
 
   getUserPosts(profileDetails, postsState) {
-    const { storedPosts, submittedPosts, userStoredPosts, userSubmittedPosts } = this.state;
+    const storedPostIds = profileDetails.object.metadata.storedPostIds;
+    const submittedPostIds = profileDetails.object.metadata.submittedPostIds;
 
-    const storedPostIds = profileDetails.object.metadata.storedPostIds || null;
-    const submittedPostIds = profileDetails.object.metadata.submittedPostIds || null;
-
-    if (storedPostIds && storedPostIds.length) {
-
+    if (storedPostIds.length || storedPostIds === '') {
       const filteredStoredPosts = postsState.length ? postsState.filter(obj => storedPostIds.indexOf(obj._id) !== -1) : [];
       this.setState({
         storedPosts: filteredStoredPosts,
         userStoredPosts: storedPostIds,
       })
     }
-    if (submittedPostIds && submittedPostIds.length) {
+    if (submittedPostIds.length || submittedPostIds === '') {
       const filteredSubmittedPosts = postsState.length ? postsState.filter(obj => obj.metadata.author === profileDetails.author) : [];
       this.setState({
         submittedPosts: filteredSubmittedPosts,
@@ -93,10 +90,13 @@ class Menu extends React.Component {
       this.setState({
         userData: profileData.profileDetails,
       })
-    } else if (profileData.type === 'PROFILE_UPDATED') {
+    } else if (profileData.type === 'PROFILE_UPDATED' && profileData.profileUpdateDetails.object.metadata.storedPostIds !== userData.object.metadata.storedPostIds) {
       this.setState({
         userData: profileData.profileUpdateDetails,
+        userStoredPosts: profileData.profileUpdateDetails.object.metadata.storedPostIds,
       })
+
+      this.getUserPosts(profileData.profileUpdateDetails, postsState);
     }
     if (posts.type === 'POSTS_FETCHED' && !postsState.length) {
       this.setState({

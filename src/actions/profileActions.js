@@ -59,14 +59,17 @@ export const editUserDetailsAction = (userData, postId, storePostToAccount, stor
 
     let replaceableId = `${postId}`;
     let replaceableIdList = `, ${postId}`;
-
     newStoredPosts = storeTypeAction ? `${userPostIds[0].value}` : submitTypeAction ? `${userSubmittedPostIds[0].value}` : ``;
+
     if (newStoredPosts.indexOf(replaceableIdList) !== -1 && !storePostToAccount) {
-      newStoredPosts.replace(replaceableIdList, ``);
+      const replacedStoredPosts = newStoredPosts.replace(replaceableIdList, "");
+      newStoredPosts = replacedStoredPosts;
     } else if (newStoredPosts.indexOf(replaceableId) !== -1 && !storePostToAccount) {
-      newStoredPosts.replace(replaceableId, ``);
+      const replacedStoredPosts = newStoredPosts.replace(replaceableId, "");
+      newStoredPosts = replacedStoredPosts;
     } else if (storePostToAccount) {
-      newStoredPosts = newStoredPosts === '' ? `${postId}` : `${newStoredPosts}, ${postId}`;
+      const replacedStoredPosts = newStoredPosts = newStoredPosts === '' ? `${postId}` : `${newStoredPosts}, ${postId}`;
+      newStoredPosts = replacedStoredPosts;
     }
 
     if (storeTypeAction) {

@@ -45,12 +45,6 @@ class Post extends React.Component {
         this.setState({ btnActiveState: !btnActiveState });
       }
     }
-    if (profileData.profileUpdateDetails && !btnActiveState) {
-
-      this.setState({ btnActiveState: !btnActiveState });
-    } else if (profileData.profileUpdateDetails && btnActiveState) {
-      this.setState({ btnActiveState: !btnActiveState });
-    }
   }
 
   expandInfo() {
@@ -70,6 +64,8 @@ class Post extends React.Component {
 
   savePost() {
     const { btnActiveState, activePost, userData } = this.state;
+    this.setState({ btnActiveState: !btnActiveState });
+
     if (activePost && !btnActiveState) {
       this.props.editUserDetailsAction(userData, activePost._id, true, 'store');
     } else if (activePost && btnActiveState) {
@@ -108,8 +104,7 @@ class Post extends React.Component {
             {(firstPost.metadata.img || activePost.metadata.img) &&
               <img src={activePost ? activePost.metadata.img : firstPost.metadata.img} alt="bkg" className={postHeaderImgClassName} />}
             <img alt="next" src={nextBtn} className="active-post-btn-next" onClick={this.nextItem} />
-            <img alt="next" src={saveBtn} className="active-post-btn-save" onClick={this.savePost} />
-            {btnActiveState && <img alt="next" src={saveBtnActive} className="active-post-btn-save" onClick={this.savePost} />}
+            <img alt="next" src={`${btnActiveState ? saveBtnActive : saveBtn}`} className="active-post-btn-save" onClick={this.savePost} />
          </div>
        );
       }
