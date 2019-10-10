@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
 import { signInAction } from '../actions/signActions.js';
 import { fetchPostAction, getPostsAction } from '../actions/postActions.js';
-import { getUserDetailsAction } from '../actions/profileActions.js';
+import { getUserDetailsAction, editUserDetailsAction } from '../actions/profileActions.js';
 import arrowIconUp from '../img/arrow-up2.png';
 import arrowIconDown from '../img/arrow-down.png';
 import additionIcon from '../img/addition.png';
@@ -59,9 +59,14 @@ class Menu extends React.Component {
     if (signType === 'LOGGED_IN' && isMobile && !loggedIn) {
       this.setState({ loggedIn: true });
     }
-    if (profileData.type === 'GET_PROFILE' && !userData) {
+
+    if (profileData.type === 'GET_PROFILE' && userData !== profileData.profileDetails) {
       this.setState({
         userData: profileData.profileDetails,
+      })
+    } else if (profileData.type === 'PROFILE_UPDATED' && userData !== profileData.profileDetails) {
+      this.setState({
+        userData: profileData.profileUpdateDetails,
       })
     }
 
@@ -133,4 +138,4 @@ const mapStateToProps = state => ({
   profileData: state.profileData,
 })
 
-export default connect(mapStateToProps, { signInAction, fetchPostAction, getPostsAction, getUserDetailsAction })(Menu);
+export default connect(mapStateToProps, { signInAction, fetchPostAction, getPostsAction, getUserDetailsAction, editUserDetailsAction })(Menu);

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
 import { signInAction } from '../actions/signActions.js';
 import { fetchPostAction } from '../actions/postActions.js';
+import { getUserDetailsAction } from '../actions/profileActions.js';
 
 import Post from './Post';
 
@@ -42,6 +43,7 @@ class Posts extends React.Component {
     const { loggedIn, isMobile, fetchPosts } = this.state;
     if (loggedIn && isMobile && !fetchPosts) {
       this.props.fetchPostAction();
+      this.props.getUserDetailsAction();
     }
   }
 
@@ -74,4 +76,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps, { signInAction, fetchPostAction })(Posts);
+export default connect(mapStateToProps, { signInAction, fetchPostAction, getUserDetailsAction })(Posts);

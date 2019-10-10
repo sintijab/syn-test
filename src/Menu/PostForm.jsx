@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
 import { getPostsAction } from '../actions/postActions.js';
+import { getUserDetailsAction, editUserDetailsAction } from '../actions/profileActions.js';
 
 class PostForm extends React.Component{
 
@@ -17,13 +18,12 @@ class PostForm extends React.Component{
       info: '',
       city: getCookie('city'),
       author: getCookie('sId'),
+      userData: null,
     }
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getPeriodOptions = this.getPeriodOptions.bind(this);
-    this.editUserDetails = this.editUserDetails.bind(this);
-    this.getUserDetails = this.getUserDetails.bind(this);
 
     this.selected_font = React.createRef();
   }
@@ -37,10 +37,26 @@ class PostForm extends React.Component{
     });
   }
 
+  componentDidUpdate() {
+    const { profileData } = this.props;
+    const { userData } = this.state;
+
+    if (profileData.type === 'GET_PROFILE' && userData !== profileData.profileDetails) {
+      this.setState({
+        userData: profileData.profileDetails,
+      })
+    } else if (profileData.type === 'PROFILE_UPDATED' && userData !== profileData.profileDetails) {
+      this.setState({
+        userData: profileData.profileUpdateDetails,
+      })
+    }
+  }
+
   handleSubmit(event) {
     event.preventDefault();
-    const { title, about, imgurl, period, plan, info, city, author } = this.state;
+    const { title, about, imgurl, period, plan, info, city, author, userData } = this.state;
     const { submit } = this.props;
+    const _this = this;
 
     let date = new Date();
     let dd = String(date.getDate()).padStart(2, '0');
@@ -146,7 +162,7 @@ class PostForm extends React.Component{
         info: '',
       });
       submit(true)
-      this.getUserDetails(postId);
+      _this.props.editUserDetailsAction(userData, postId, true, 'submit');
     })
     .catch(err => {
       console.log(err)
@@ -156,101 +172,6 @@ class PostForm extends React.Component{
       console.log(err)
     })
     }
-  }
-
-  getUserDetails(postId) {
-    const _this = this;
-    const Cosmic = require('cosmicjs')({
-      token: getCookie('val') // optional
-    })
-    Cosmic.getBuckets()
-    .then(data => {
-      let bucket = Cosmic.bucket({
-        slug: data.buckets[0].slug,
-        read_key: data.buckets[0].api_access.read_key
-      })
-      let mail = getCookie('sId');
-      let adjustedEmail = mail.replace("@", "");
-      let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
-      bucket.getObject({
-        slug: emailEncoded
-      }).then(userData => {
-        _this.editUserDetails(userData, postId);
-      }).catch(err => {
-        console.log(err)
-      })
-    })
-  }
-
-  editUserDetails(userData, postId) {
-    const Cosmic = require('cosmicjs')({
-      token: getCookie('val') // optional
-    })
-    Cosmic.getBuckets()
-    .then(data => {
-      let bucket = Cosmic.bucket({
-        slug: data.buckets[0].slug,
-        write_key: data.buckets[0].api_access.write_key
-      })
-      let mail = getCookie('sId');
-      let adjustedEmail = mail.replace("@", "");
-      let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
-      const userSubmittedPostIds = userData.object.metafields.filter(obj => obj.key === 'submittedPostIds');
-      const userStoredPostIds = userData.object.metafields.filter(obj => obj.key === 'storedPostIds');
-      const userIdMetadield = userData.object.metafields.filter(obj => obj.key === 'uid');
-      const userNameMetadield = userData.object.metafields.filter(obj => obj.key === 'uname');
-      const userEmailMetadield = userData.object.metafields.filter(obj => obj.key === 'email');
-
-      const newSubmittedPosts = userSubmittedPostIds.length ? `${userSubmittedPostIds[0].value}, ${postId}` : `${postId}`;
-      const userStoredPosts = userStoredPostIds.length ? `${userSubmittedPostIds[0].value}` : ``;
-
-      localStorage.setItem('submittedPostIds', newSubmittedPosts);
-
-      if (userIdMetadield.length && userNameMetadield.length && userEmailMetadield.length) {
-        bucket.editObject({
-          slug: emailEncoded,
-          metafields: [
-            {
-              value: newSubmittedPosts,
-              key: 'submittedPostIds',
-              title: 'submittedPostIds',
-              type: 'text',
-              children: null
-            },
-            {
-              value: userStoredPosts,
-              key: 'storedPostIds',
-              title: 'storedPostIds',
-              type: 'text',
-              children: null
-            },
-            {
-              value: userIdMetadield[0].value,
-              key: 'uid',
-              title: 'uid',
-              type: 'text',
-              children: null
-            },
-            {
-              value: userNameMetadield[0].value,
-              key: 'uname',
-              title: 'userName',
-              type: 'text',
-              children: null
-            },
-            {
-              value: userEmailMetadield[0].value,
-              key: 'email',
-              title: 'userMail',
-              type: 'text',
-              children: null
-            }]
-        }).catch(err => {
-          console.log(err)
-        })
-      }
-    })
-    this.props.getPostsAction();
   }
 
   toggleOverlay() {
@@ -309,6 +230,7 @@ class PostForm extends React.Component{
 
 const mapStateToProps = state => ({
   postsState: state.postsState.postsData,
+  profileData: state.profileData,
 })
 
-export default connect(mapStateToProps, { getPostsAction })(PostForm);
+export default connect(mapStateToProps, { getPostsAction, getUserDetailsAction, editUserDetailsAction })(PostForm);

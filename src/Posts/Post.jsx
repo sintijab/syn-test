@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import nextBtn from '../img/arrow.png';
 import saveBtn from '../img/like.png';
 import saveBtnActive from '../img/like2.png';
-import { getCookie } from '../functions.js';
 import { getUserDetailsAction } from '../actions/profileActions.js';
 
 class Post extends React.Component {
@@ -21,7 +20,6 @@ class Post extends React.Component {
     this.expandInfo = this.expandInfo.bind(this);
     this.nextItem = this.nextItem.bind(this);
     this.savePost = this.savePost.bind(this);
-    this.editUserDetails = this.editUserDetails.bind(this);
   }
 
   componentDidUpdate() {
@@ -52,106 +50,21 @@ class Post extends React.Component {
     }
   }
 
-  editUserDetails(postId, storePostToAccount) {
-    const { userData } = this.state;
-    const Cosmic = require('cosmicjs')({
-      token: getCookie('val') // optional
-    })
-    Cosmic.getBuckets()
-    .then(data => {
-      let bucket = Cosmic.bucket({
-        slug: data.buckets[0].slug,
-        write_key: data.buckets[0].api_access.write_key
-      })
-      let mail = getCookie('sId');
-      let adjustedEmail = mail.replace("@", "");
-      let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
-      const userPostIds = userData.object.metafields.filter(obj => obj.key === 'storedPostIds');
-      const userIdMetadield = userData.object.metafields.filter(obj => obj.key === 'uid');
-      const userNameMetadield = userData.object.metafields.filter(obj => obj.key === 'uname');
-      const userEmailMetadield = userData.object.metafields.filter(obj => obj.key === 'email');
-      const userSubmittedPostIds = userData.object.metafields.filter(obj => obj.key === 'submittedPostIds');
-
-      let newStoredPosts =  ``;
-      const userSubmittedPosts = userSubmittedPostIds.length ? `${userSubmittedPostIds[0].value}` : ``;
-      if (userPostIds.length) {
-        let newStoredPosts = `${userPostIds[0].value}`;
-        let replaceableId = `${postId}`;
-        let replaceableIdList = `, ${postId}`;
-        if (newStoredPosts.indexOf(replaceableIdList) !== -1 && !storePostToAccount) {
-          newStoredPosts.replace(replaceableIdList, ``);
-        } else if (newStoredPosts.indexOf(replaceableId) !== -1 && !storePostToAccount) {
-          newStoredPosts.replace(replaceableId, ``);
-        } else if (storePostToAccount) {
-          newStoredPosts = `${userPostIds[0].value}, ${postId}`;
-        }
-      } else {
-        newStoredPosts = `${postId}`;
-      }
-      localStorage.setItem('storedPostIds', newStoredPosts);
-
-
-      bucket.editObject({
-        slug: emailEncoded,
-        metafields: [
-          {
-            value: userSubmittedPosts,
-            key: 'submittedPostIds',
-            title: 'submittedPostIds',
-            type: 'text',
-            children: null
-          },
-          {
-            value: newStoredPosts,
-            key: 'storedPostIds',
-            title: 'storedPostIds',
-            type: 'text',
-            children: null
-          },
-          {
-            value: userIdMetadield[0].value,
-            key: 'uid',
-            title: 'uid',
-            type: 'text',
-            children: null
-          },
-          {
-            value: userNameMetadield[0].value,
-            key: 'uname',
-            title: 'userName',
-            type: 'text',
-            children: null
-          },
-          {
-            value: userEmailMetadield[0].value,
-            key: 'email',
-            title: 'userMail',
-            type: 'text',
-            children: null
-          }]
-      }).catch(err => {
-        console.log(err)
-      })
-    })
-    this.props.getPostsAction();
-  }
-
   savePost() {
-    const { btnActiveState, activePost } = this.state;
-    this.props.getUserDetailsAction();
+    const { btnActiveState, activePost, userData } = this.state;
 
     if (activePost && !btnActiveState) {
       this.setState({ btnActiveState: !btnActiveState });
-      this.editUserDetails(activePost._id, true);
+      this.props.editUserDetailsAction(userData, activePost._id, true, 'store');
     } else if (activePost && btnActiveState) {
       this.setState({ btnActiveState: !btnActiveState });
-      this.editUserDetails(activePost._id, false);
+      this.props.editUserDetailsAction(userData, activePost._id, false, 'store');
     }
   }
 
 
   render() {
-    const { isMobile, loggedIn, firstPost, firstIndex } = this.props;
+    const { isMobile, loggedIn, firstPost } = this.props;
     const { activePost,  showFullInfo, btnActiveState } = this.state;
       if (isMobile && loggedIn && firstPost) {
         const postHeaderClassName = showFullInfo ? "active-post-header active-post-header-active" : "active-post-header";

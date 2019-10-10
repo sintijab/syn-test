@@ -11,6 +11,12 @@ export default (state = initialState, action) => {
 		  type: action.type,
       profileDetails: action.payload
    }
+   case 'PROFILE_UPDATED':
+    return {
+ 		 ...state,
+ 		  type: action.type,
+      profileUpdateDetails: action.payload
+    }
   default:
    return state
  }
