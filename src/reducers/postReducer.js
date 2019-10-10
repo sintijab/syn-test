@@ -23,6 +23,11 @@ export default (state = initialState, action) => {
        type: action.type,
        postData: action.payload
      }
+		 case 'NEXT_POST':
+      return {
+  			...state,
+        type: action.type,
+      }
   default:
    return state
  }

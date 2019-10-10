@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
 import { signInAction } from '../actions/signActions.js';
 import { fetchPostAction, getPostsAction } from '../actions/postActions.js';
-import { getUserDetailsAction, editUserDetailsAction } from '../actions/profileActions.js';
+import { getUserDetailsAction, editUserDetailsAction, updateUserStoredPostsAction } from '../actions/profileActions.js';
 import arrowIconUp from '../img/arrow-up2.png';
 import arrowIconDown from '../img/arrow-down.png';
 import additionIcon from '../img/addition.png';
@@ -20,18 +20,23 @@ class Menu extends React.Component {
     this.state = {
       loggedIn: !!(getCookie('val')),
       userId: getCookie('sId'),
-      userStoredPosts: localStorage.getItem('storedPostIds'),
       isMobile: !!(window.innerWidth < 479),
       menuVisible: false,
       displayOverlay: false,
       postSubmitted: false,
-      activeTab: null,
+      activeTab: 'stored',
       userData: null,
+      postsState: [],
+      storedPosts: [],
+      submittedPosts: [],
+      userStoredPosts: localStorage.getItem('storedPostIds'),
+      userSubmittedPosts: localStorage.getItem('submittedPostIds'),
     }
     this.expandMenu = this.expandMenu.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
     this.postSubmitted = this.postSubmitted.bind(this);
     this.setTabActive = this.setTabActive.bind(this);
+    this.getUserPosts = this.getUserPosts.bind(this);
 
   }
 
@@ -50,9 +55,33 @@ class Menu extends React.Component {
     }
   }
 
+  getUserPosts(profileDetails, postsState) {
+    const { storedPosts, submittedPosts, userStoredPosts, userSubmittedPosts } = this.state;
+
+    const storedPostIds = profileDetails.object.metadata.storedPostIds || null;
+    const submittedPostIds = profileDetails.object.metadata.submittedPostIds || null;
+
+    if (storedPostIds && storedPostIds.length) {
+
+      const filteredStoredPosts = postsState.length ? postsState.filter(obj => storedPostIds.indexOf(obj._id) !== -1) : [];
+      this.setState({
+        storedPosts: filteredStoredPosts,
+        userStoredPosts: storedPostIds,
+      })
+    }
+    if (submittedPostIds && submittedPostIds.length) {
+      const filteredSubmittedPosts = postsState.length ? postsState.filter(obj => obj.metadata.author === profileDetails.author) : [];
+      this.setState({
+        submittedPosts: filteredSubmittedPosts,
+        userSubmittedPosts: submittedPostIds,
+      })
+    }
+  }
+
+
   componentDidUpdate() {
-    const { menuVisible, displayOverlay, loggedIn, isMobile, userData } = this.state;
-    const { signType, profileData } = this.props;
+    const { menuVisible, displayOverlay, loggedIn, isMobile, userData, postsState, storedPosts, submittedPosts } = this.state;
+    const { signType, profileData, posts } = this.props;
     if (!menuVisible && displayOverlay) {
       this.setState({ displayOverlay: false });
     }
@@ -68,6 +97,29 @@ class Menu extends React.Component {
       this.setState({
         userData: profileData.profileUpdateDetails,
       })
+    }
+    if (posts.type === 'POSTS_FETCHED' && !postsState.length) {
+      this.setState({
+        postsState: posts.postsData,
+        activePost: posts.postsData[0],
+        activeIndex: 0,
+        loading: false,
+        fetchPosts: true,
+        loggedIn: true,
+      });
+    }
+    if (userData && menuVisible && postsState.length) {
+      const storedPostIds = userData.object.metadata.storedPostIds;
+      const submittedPostIds = userData.object.metadata.submittedPostIds;
+
+      const updateUserStoredPosts = storedPostIds && storedPostIds.length && (storedPosts.length === 0 || profileData.type === 'PROFILE_UPDATED');
+      const updateUserSubmittedPosts = submittedPostIds && submittedPostIds.length && (submittedPosts.length === 0 || profileData.type === 'PROFILE_UPDATED');
+
+      if (profileData && postsState && (updateUserStoredPosts || updateUserSubmittedPosts)) {
+        debugger;
+        this.getUserPosts(userData, postsState);
+        this.props.updateUserStoredPostsAction();
+      }
     }
   }
 
@@ -92,10 +144,8 @@ class Menu extends React.Component {
   }
 
   render() {
-    const { isMobile, loggedIn, menuVisible, displayOverlay, postSubmitted, userId, userStoredPosts, activeTab } = this.state;
-    const { postsState = [] } = this.props;
-    const submittedPosts = postsState.length ? postsState.filter(obj => obj.metadata.author === userId) : [];
-    const storedPosts = postsState.length && userStoredPosts ? postsState.filter(obj => userStoredPosts.indexOf(obj.metadata.postId) !== -1) : [];
+    const { isMobile, loggedIn, menuVisible, displayOverlay, postSubmitted, userId, userStoredPosts, activeTab, postsState, submittedPosts, storedPosts } = this.state;
+
     const menuClass = menuVisible ? "menu_nav--open" : "menu_nav--open menu_nav--closed";
     const menuHeaderClass = !menuVisible ? "menu menu--closed" : "menu";
       if (isMobile && loggedIn) {
@@ -112,7 +162,7 @@ class Menu extends React.Component {
                      <img alt="menu" src={arrowIconDown} className="arrow_icon--menu" />
                   </div>}
                 {menuVisible && <Tabs isMobile loggedIn menuVisible setTabActive={this.setTabActive} activeTab={activeTab}/>}
-                {menuVisible && submittedPosts.length && activeTab === (null || 'stored') && <PostsPreview posts={storedPosts} />}
+                {menuVisible && storedPosts.length && activeTab === (null || 'stored') && <PostsPreview posts={storedPosts} />}
                 {menuVisible && submittedPosts.length && activeTab === 'submitted' && <PostsPreview posts={submittedPosts} />}
               </div>
               {menuVisible && <img alt="menu" src={additionIcon} className="addition-icon" onClick={this.toggleOverlay}/>}
@@ -133,8 +183,8 @@ class Menu extends React.Component {
 const mapStateToProps = state => ({
   error: state.error,
   signType: state.signInStatus.type,
-  postsState: state.postsState.postsData,
+  posts: state.postsState,
   profileData: state.profileData,
 })
 
-export default connect(mapStateToProps, { signInAction, fetchPostAction, getPostsAction, getUserDetailsAction, editUserDetailsAction })(Menu);
+export default connect(mapStateToProps, { signInAction, fetchPostAction, getPostsAction, getUserDetailsAction, editUserDetailsAction, updateUserStoredPostsAction })(Menu);

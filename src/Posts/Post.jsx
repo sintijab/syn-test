@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import nextBtn from '../img/arrow.png';
 import saveBtn from '../img/like.png';
 import saveBtnActive from '../img/like2.png';
-import { getUserDetailsAction } from '../actions/profileActions.js';
+import { getUserDetailsAction, editUserDetailsAction } from '../actions/profileActions.js';
+import { nextPostAction } from '../actions/postActions.js';
 
 class Post extends React.Component {
 
@@ -23,16 +24,26 @@ class Post extends React.Component {
   }
 
   componentDidUpdate() {
-    const { cosmic, profileData } = this.props;
-    const { activePost, userData } = this.state;
-    if (cosmic && cosmic.posts && cosmic.posts.length && !activePost) {
-      this.setState({ activePost: cosmic.posts[0], activeIndex: 0 });
+    const { cosmic, profileData, nextPostState } = this.props;
+    const { activePost, userData, btnActiveState } = this.state;
+    if (cosmic && cosmic.posts && cosmic.posts.postsData.length && !activePost && userData) {
+      this.setState({ activePost: cosmic.posts.postsData[0], activeIndex: 0 });
+      if (userData.object.metadata.storedPostIds.indexOf(cosmic.posts.postsData[0]._id) !== -1 && !btnActiveState) {
+        this.setState({ btnActiveState: true });
+      }
     }
 
     if (profileData.type === 'GET_PROFILE' && !userData) {
       this.setState({
         userData: profileData.profileDetails,
       })
+    }
+    if (userData && activePost && nextPostState.postsState && nextPostState.postsState.type === 'NEXT_POST') {
+      if (userData.object.metadata.storedPostIds.indexOf(activePost._id) !== -1 && !btnActiveState) {
+        this.setState({ btnActiveState: true });
+      } else if (userData.object.metadata.storedPostIds.indexOf(activePost._id) === -1 && btnActiveState) {
+        this.setState({ btnActiveState: false });
+      }
     }
   }
 
@@ -44,9 +55,10 @@ class Post extends React.Component {
   nextItem() {
     const { cosmic, firstIndex } = this.props;
     const { activeIndex } = this.state;
-    if (cosmic && cosmic.posts && cosmic.posts.length) {
+    if (cosmic && cosmic.posts && cosmic.posts.postsData.length) {
       const nextIndex = activeIndex ? activeIndex : firstIndex;
-      this.setState({ activePost: cosmic.posts[nextIndex + 1], activeIndex: nextIndex + 1 });
+      this.setState({ activePost: cosmic.posts.postsData[nextIndex + 1], activeIndex: nextIndex + 1 });
+      this.props.nextPostAction();
     }
   }
 
@@ -104,6 +116,7 @@ class Post extends React.Component {
 
 const mapStateToProps = state => ({
   profileData: state.profileData,
+  nextPostState: state,
 })
 
-export default connect(mapStateToProps, { getUserDetailsAction })(Post);
+export default connect(mapStateToProps, { getUserDetailsAction, editUserDetailsAction, nextPostAction })(Post);

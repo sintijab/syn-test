@@ -1,4 +1,4 @@
-import { POSTS_FETCHED, POSTS_UPDATED, POST_ADDED } from "./types"
+import { POSTS_FETCHED, POSTS_UPDATED, POST_ADDED, NEXT_POST } from "./types"
 import { getCookie, validateImgSource } from '../functions.js';
 import defaultPostImg1 from '../img/default01.png';
 import defaultPostImg2 from '../img/default02.png';
@@ -192,4 +192,10 @@ export const addPostAction = formData => dispatch => {
     console.log(err)
   })
   }
+}
+
+export const nextPostAction = () => dispatch => {
+  dispatch({
+   type: NEXT_POST,
+  })
 }

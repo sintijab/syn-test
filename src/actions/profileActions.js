@@ -1,4 +1,4 @@
-import { GET_PROFILE, PROFILE_UPDATED } from "./types"
+import { GET_PROFILE, PROFILE_UPDATED, STORED_POSTS_UPDATED } from "./types"
 import { getCookie } from '../functions.js';
 
 export const getUserDetailsAction = () => dispatch => {
@@ -27,6 +27,12 @@ if (mail) {
     })
   })
 }
+}
+
+export const updateUserStoredPostsAction = () => dispatch => {
+  dispatch({
+   type: STORED_POSTS_UPDATED
+  })
 }
 
 export const editUserDetailsAction = (userData, postId, storePostToAccount, storeType) => dispatch => {
