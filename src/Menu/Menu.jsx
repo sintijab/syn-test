@@ -116,7 +116,6 @@ class Menu extends React.Component {
       const updateUserSubmittedPosts = submittedPostIds && submittedPostIds.length && (submittedPosts.length === 0 || profileData.type === 'PROFILE_UPDATED');
 
       if (profileData && postsState && (updateUserStoredPosts || updateUserSubmittedPosts)) {
-        debugger;
         this.getUserPosts(userData, postsState);
         this.props.updateUserStoredPostsAction();
       }
