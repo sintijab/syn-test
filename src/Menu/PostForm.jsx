@@ -46,15 +46,13 @@ class PostForm extends React.Component{
       this.setState({
         userData: profileData.profileDetails,
       })
-    } else if (profileData.type === 'PROFILE_UPDATED' && userData !== profileData.profileDetails) {
+    } else if (profileData.type === 'PROFILE_UPDATED' && profileData.profileDetails && userData && userData !== profileData.profileDetails) {
       this.setState({
         userData: profileData.profileUpdateDetails,
       })
     }
     if (postAddedAction && postAddedAction.type === 'POST_ADDED' && !postAdded) {
-      const postId = `${title}${author}${date}`;
       submit(true);
-      this.props.editUserDetailsAction(userData, postId, true, 'submit');
       this.setState({
         postAdded: true,
         title: '',

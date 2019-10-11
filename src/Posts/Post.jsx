@@ -28,7 +28,7 @@ class Post extends React.Component {
     const { activePost, userData, btnActiveState } = this.state;
     if (cosmic && cosmic.posts && cosmic.posts.postsData.length && !activePost && userData) {
       this.setState({ activePost: cosmic.posts.postsData[0], activeIndex: 0 });
-      if (userData.object.metadata.storedPostIds.indexOf(cosmic.posts.postsData[0]._id) !== -1 && !btnActiveState) {
+      if (userData.object.metadata.storedPostIds && userData.object.metadata.storedPostIds.indexOf(cosmic.posts.postsData[0]._id) !== -1 && !btnActiveState) {
         this.setState({ btnActiveState: true });
       }
     }
@@ -39,9 +39,9 @@ class Post extends React.Component {
       })
     }
     if (userData && activePost && nextPostState.postsState && nextPostState.postsState.type === 'NEXT_POST') {
-      if (userData.object.metadata.storedPostIds.indexOf(activePost._id) !== -1 && !btnActiveState) {
+      if (userData.object.metadata.storedPostIds && userData.object.metadata.storedPostIds.indexOf(activePost._id) !== -1 && !btnActiveState) {
         this.setState({ btnActiveState: !btnActiveState });
-      } else if (userData.object.metadata.storedPostIds.indexOf(activePost._id) === -1 && btnActiveState) {
+      } else if (userData.object.metadata.storedPostIds && userData.object.metadata.storedPostIds.indexOf(activePost._id) === -1 && btnActiveState) {
         this.setState({ btnActiveState: !btnActiveState });
       }
     }

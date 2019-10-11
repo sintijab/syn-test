@@ -26,8 +26,8 @@ class Posts extends React.Component {
   componentDidMount() {
     const { loggedIn, isMobile, fetchPosts } = this.state;
     if (loggedIn && isMobile && !fetchPosts) {
-      this.props.fetchPostAction();
       this.props.getUserDetailsAction();
+      this.props.fetchPostAction();
     }
   }
 
@@ -37,6 +37,7 @@ class Posts extends React.Component {
     const { postsData = [] } = posts;
 
     if (signType === 'LOGGED_IN' && isMobile && !fetchPosts) {
+      this.props.getUserDetailsAction();
       this.props.fetchPostAction();
       this.setState({ fetchPosts: true });
     }

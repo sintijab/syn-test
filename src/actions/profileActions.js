@@ -14,7 +14,7 @@ if (mail) {
       read_key: data.buckets[0].api_access.read_key
     })
     let adjustedEmail = mail.replace("@", "");
-    let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
+    let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "").toLowerCase();;
     bucket.getObject({
       slug: emailEncoded
     }).then(userData => {
@@ -43,23 +43,20 @@ export const editUserDetailsAction = (userData, postId, storePostToAccount, stor
     })
     let mail = getCookie('sId');
     let adjustedEmail = mail.replace("@", "");
-    let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
+    let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "").toLowerCase();;
 
     const userIdMetadield = profileData.filter(obj => obj.key === 'uid');
     const userNameMetadield = profileData.filter(obj => obj.key === 'uname');
     const userEmailMetadield = profileData.filter(obj => obj.key === 'email');
-    const userSubmittedPostIds = profileData.filter(obj => obj.key === 'submittedPostIds');
     const userPostIds = profileData.filter(obj => obj.key === 'storedPostIds');
 
     const storeTypeAction = userPostIds.length && storeType === 'store';
-    const submitTypeAction = userPostIds.length && storeType === 'submit';
 
     let newStoredPosts =  userPostIds.length ? `${userPostIds[0].value}` : ``;
-    let newSubmittedPosts = userSubmittedPostIds.length ? `${userSubmittedPostIds[0].value}` : ``;
 
     let replaceableId = `${postId}`;
     let replaceableIdList = `, ${postId}`;
-    newStoredPosts = storeTypeAction ? `${userPostIds[0].value}` : submitTypeAction ? `${userSubmittedPostIds[0].value}` : ``;
+    newStoredPosts = storeTypeAction ? `${userPostIds[0].value}` : ``;
 
     if (newStoredPosts.indexOf(replaceableIdList) !== -1 && !storePostToAccount) {
       const replacedStoredPosts = newStoredPosts.replace(replaceableIdList, "");
@@ -74,22 +71,11 @@ export const editUserDetailsAction = (userData, postId, storePostToAccount, stor
 
     if (storeTypeAction) {
       localStorage.setItem('storedPostIds', newStoredPosts);
-    } else if (submitTypeAction) {
-      localStorage.setItem('submittedPostIds', newStoredPosts);
-      newSubmittedPosts = newStoredPosts;
-      newStoredPosts = userPostIds.length ? `${userPostIds[0].value}` : ``;
     }
 
     bucket.editObject({
       slug: emailEncoded,
       metafields: [
-        {
-          value: newSubmittedPosts,
-          key: 'submittedPostIds',
-          title: 'submittedPostIds',
-          type: 'text',
-          children: null
-        },
         {
           value: newStoredPosts,
           key: 'storedPostIds',
@@ -135,9 +121,7 @@ const delete_cookie = (name) => {
 
 export const clearAllStorage = () => {
   const storedPostIds = localStorage.getItem('storedPostIds');
-  const submittedPostIds = localStorage.getItem('submittedPostIds');
   !!storedPostIds && localStorage.removeItem('storedPostIds');
-  !!submittedPostIds && localStorage.removeItem('submittedPostIds');
 
   const token = getCookie('val');
   const mail = getCookie('sId');

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getCookie } from '../functions.js';
 import { signInAction } from '../actions/signActions.js';
-import { fetchPostAction, getPostsAction, updateUserStoredPostsAction } from '../actions/postActions.js';
+import { fetchPostAction, getPostsAction, updateUserStoredPostsAction, addPostAction } from '../actions/postActions.js';
 import { getUserDetailsAction, editUserDetailsAction } from '../actions/profileActions.js';
 import arrowIconUp from '../img/arrow-up2.png';
 import arrowIconDown from '../img/arrow-down.png';
@@ -55,30 +55,23 @@ class Menu extends React.Component {
     }
   }
 
-  getUserPosts(profileDetails, postsState) {
-    const storedPostIds = profileDetails.object.metadata.storedPostIds;
-    const submittedPostIds = profileDetails.object.metadata.submittedPostIds;
-
+  getUserPosts(storedPostIds, postsState) {
+    const { userId } = this.state;
     if (storedPostIds.length || storedPostIds === '') {
       const filteredStoredPosts = postsState.length ? postsState.filter(obj => storedPostIds.indexOf(obj._id) !== -1) : [];
+      const filterSubmittedPosts = postsState.length ? postsState.filter(obj => obj.metadata.author === userId) : [];
       this.setState({
         storedPosts: filteredStoredPosts,
         userStoredPosts: storedPostIds,
-      })
-    }
-    if (submittedPostIds.length || submittedPostIds === '') {
-      const filteredSubmittedPosts = postsState.length ? postsState.filter(obj => obj.metadata.author === profileDetails.author) : [];
-      this.setState({
-        submittedPosts: filteredSubmittedPosts,
-        userSubmittedPosts: submittedPostIds,
+        submittedPosts: filterSubmittedPosts,
       })
     }
   }
 
 
   componentDidUpdate() {
-    const { menuVisible, displayOverlay, loggedIn, isMobile, userData, postsState, storedPosts, submittedPosts, userStoredPosts, userSubmittedPosts  } = this.state;
-    const { signType, profileData, posts } = this.props;
+    const { menuVisible, displayOverlay, loggedIn, isMobile, userData, userId, postsState, storedPosts, submittedPosts, userStoredPosts, userSubmittedPosts  } = this.state;
+    const { signType, profileData, posts, post} = this.props;
     if (!menuVisible && displayOverlay) {
       this.setState({ displayOverlay: false });
     }
@@ -108,22 +101,37 @@ class Menu extends React.Component {
         loggedIn: true,
       });
     }
-    if ((profileData.profileUpdateDetails || profileData.profileDetails) && postsState.length) {
-      const storeDataType = profileData.profileUpdateDetails ? profileData.profileUpdateDetails : profileData.profileDetails;
-      const storedPostIds = storeDataType.object.metadata.storedPostIds;
-      const submittedPostIds = storeDataType.object.metadata.submittedPostIds;
 
-      const updateUserStoredPosts = storedPostIds && storedPostIds.length && (storedPosts.length === 0 || userStoredPosts.length !== storedPostIds.length);
-      const updateUserSubmittedPosts = submittedPostIds && submittedPostIds.length &&
-        (submittedPosts.length === 0 || userSubmittedPosts.length !== submittedPostIds.length);
-      if (profileData && postsState && (updateUserStoredPosts || updateUserSubmittedPosts)) {
-        this.getUserPosts(storeDataType, postsState);
+    if (profileData.profileUpdateDetails && (submittedPosts.length !== postsState.filter(obj => obj.metadata.author === userId).length ||
+      userStoredPosts.length !== profileData.profileUpdateDetails.object.metadata.storedPostIds.length)) {
+        const uData = profileData.profileUpdateDetails;
+        const storedPostIds = uData.object.metadata.storedPostIds;
+        const updateUserStoredPosts = storedPostIds && storedPostIds.length && (storedPosts.length === 0 || userStoredPosts.length !== storedPostIds.length);
+        if (uData && postsState && (updateUserStoredPosts)) {
+          this.getUserPosts(storedPostIds, postsState);
+        }
       }
-    }
-  }
 
-  componentDidMount() {
-    this.props.getUserDetailsAction();
+    if (userData && postsState.length && (userStoredPosts.length !== userData.object.metadata.storedPostIds.length ||
+      submittedPosts.length !== (postsState.filter(obj => obj.metadata.author === userId).length))) {
+        const storedPostIds = userData.object.metadata.storedPostIds;
+        const updateUserStoredPosts = storedPostIds && storedPostIds.length && (storedPosts.length === 0 || userStoredPosts.length !== storedPostIds.length);
+        if (userData && postsState && (updateUserStoredPosts)) {
+          this.getUserPosts(storedPostIds, postsState);
+        }
+      }
+
+    if (post && post.type && post.type === 'POST_ADDED' &&
+      post.postData && post.postData.object.metadata.author === userId && !submittedPosts.filter(obj => obj._id === post.postData.object._id).length) {
+        let updatedSubmittedPosts = submittedPosts;
+        let createdPost = post.postData.object || {};
+        updatedSubmittedPosts.push(createdPost);
+        if (!submittedPosts.length || submittedPosts.length !== updatedSubmittedPosts.length) {
+          this.setState({
+            submittedPosts: updatedSubmittedPosts,
+          });
+        }
+    }
   }
 
   toggleOverlay() {
@@ -184,6 +192,7 @@ const mapStateToProps = state => ({
   signType: state.signInStatus.type,
   posts: state.postsState,
   profileData: state.profileData,
+  post: state.postsState,
 })
 
-export default connect(mapStateToProps, { signInAction, fetchPostAction, getPostsAction, getUserDetailsAction, editUserDetailsAction, updateUserStoredPostsAction })(Menu);
+export default connect(mapStateToProps, { signInAction, fetchPostAction, getPostsAction, getUserDetailsAction, editUserDetailsAction, updateUserStoredPostsAction, addPostAction })(Menu);

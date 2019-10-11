@@ -70,7 +70,6 @@ class SignIn extends React.Component {
     var hId = hashed.generate(JSON.stringify(upassword));
     let adjustedEmail = mail.replace("@", "");
     let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
-    setCookie('sId', mail, 1);
 
     const params = {
       title: uname,
@@ -87,7 +86,7 @@ class SignIn extends React.Component {
           children: null
         },
         {
-          value: emailEncoded,
+          value: mail,
           key: 'email',
           title: 'userMail',
           type: 'text',
