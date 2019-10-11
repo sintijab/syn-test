@@ -12,6 +12,7 @@ import checkmark from '../img/checkmark.png';
 import Tabs from './Tabs.jsx';
 import PostForm from './PostForm';
 import PostsPreview from './PostsPreview';
+import SettingsView from './SettingsView';
 
 class Menu extends React.Component {
 
@@ -151,7 +152,7 @@ class Menu extends React.Component {
   }
 
   render() {
-    const { isMobile, loggedIn, menuVisible, displayOverlay, postSubmitted, userId, userStoredPosts, activeTab, postsState, submittedPosts, storedPosts } = this.state;
+    const { isMobile, loggedIn, menuVisible, displayOverlay, postSubmitted, userId, activeTab, submittedPosts, storedPosts, userData } = this.state;
 
     const menuClass = menuVisible ? "menu_nav--open" : "menu_nav--open menu_nav--closed";
     const menuHeaderClass = !menuVisible ? "menu menu--closed" : "menu";
@@ -171,6 +172,7 @@ class Menu extends React.Component {
                 {menuVisible && <Tabs isMobile loggedIn menuVisible setTabActive={this.setTabActive} activeTab={activeTab}/>}
                 {menuVisible && storedPosts.length && activeTab === (null || 'stored') && <PostsPreview posts={storedPosts} />}
                 {menuVisible && submittedPosts.length && activeTab === 'submitted' && <PostsPreview posts={submittedPosts} />}
+                {menuVisible && activeTab === 'settings' && <SettingsView mail={userId} data={userData}/>}
               </div>
               {menuVisible && <img alt="menu" src={additionIcon} className="addition-icon" onClick={this.toggleOverlay}/>}
               {menuVisible && postSubmitted && !displayOverlay &&

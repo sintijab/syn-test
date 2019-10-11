@@ -55,11 +55,26 @@ export const signInAction = (email, password) => dispatch => {
 })
 }
 
-export const signOutAction = () => dispatch => {
-  eraseCookie('val');
- dispatch({
-  type: LOGGED_OUT,
- })
+const delete_cookie = (name) => {
+    document.cookie = name + '=;expires=Thu, 01 Jan 1990 00:00:01 GMT;';
+};
+
+export const logOutAction = () => dispatch => {
+  const storedPostIds = localStorage.getItem('storedPostIds');
+  const storedNr = sessionStorage.getItem('authNr');
+  !!storedPostIds && localStorage.removeItem('storedPostIds');
+  !!storedNr && sessionStorage.removeItem('authNr');
+
+  const token = getCookie('val');
+  const mail = getCookie('sId');
+
+  !!token && delete_cookie('val');
+  !!mail && delete_cookie('sId');
+
+  dispatch({
+   type: LOGGED_OUT,
+  })
+  window.location.reload(true);
 }
 
 export const signStatusAction = () => dispatch => {

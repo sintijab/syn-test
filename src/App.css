@@ -495,3 +495,11 @@ button:focus {
 .preview_post-text {
   line-height: 2;
 }
+
+.font-bold {
+  font-weight: bolder;
+}
+
+.disabled-text {
+  display: none;
+}

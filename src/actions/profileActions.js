@@ -114,19 +114,3 @@ export const editUserDetailsAction = (userData, postId, storePostToAccount, stor
     })
   })
 }
-
-const delete_cookie = (name) => {
-    document.cookie = name + '=;expires=Thu, 01 Jan 1990 00:00:01 GMT;';
-};
-
-export const clearAllStorage = () => {
-  const storedPostIds = localStorage.getItem('storedPostIds');
-  !!storedPostIds && localStorage.removeItem('storedPostIds');
-
-  const token = getCookie('val');
-  const mail = getCookie('sId');
-  !!token && delete_cookie('val');
-  !!mail && delete_cookie('sId');
-
-  window.location.reload(true);
-}

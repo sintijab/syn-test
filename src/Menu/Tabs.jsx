@@ -22,9 +22,8 @@ class Tabs extends React.Component {
           <div className="nav">
             <ul className="nav_list">
               <li className="nav_icon"><img alt="menu" src={menuIcon1} className={`nav_icon-img ${ activeTab === 'stored' ? 'nav_icon-active' : '' }`} onClick={() => setTabActive('stored')}/></li>
-              <li className="nav_icon"><img alt="menu" src={menuIcon2} className={`nav_icon-img ${ activeTab === 'chat' ? 'nav_icon-active' : '' }`} onClick={() => setTabActive('chat')}/></li>
               <li className="nav_icon"><img alt="menu" src={menuIcon3} className={`nav_icon-img ${ activeTab === 'submitted' ? 'nav_icon-active' : '' }`} onClick={() => setTabActive('submitted')}/></li>
-              <li className="nav_icon"><img alt="menu" src={menuIcon4} className={`nav_icon-img ${ activeTab === 'calendar' ? 'nav_icon-active' : '' }`} onClick={() => setTabActive('calendar')}/></li>
+              <li className="nav_icon"><img alt="menu" src={menuIcon4} className={`nav_icon-img ${ activeTab === 'settings' ? 'nav_icon-active' : '' }`} onClick={() => setTabActive('settings')}/></li>
             </ul>
          </div>
        );
