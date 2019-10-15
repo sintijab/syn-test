@@ -503,3 +503,19 @@ button:focus {
 .disabled-text {
   display: none;
 }
+
+.device {
+  display: inline-block;
+  height: 75vH;
+  margin: 0 1.5rem;
+}
+
+.device-frame {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 75vH;
+  margin: auto;
+}
