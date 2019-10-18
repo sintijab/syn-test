@@ -28,6 +28,7 @@ class SignIn extends React.Component {
       validateNr: '',
       signUpSuccess: null,
       signInSuccess: null,
+      uValidation: '',
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -132,43 +133,41 @@ class SignIn extends React.Component {
 
   handleSignUp(event) {
     event.preventDefault();
-
-    const { uname, mail } = this.state;
     const uValidation = Math.floor((Math.random() * 999000) + 100000);
     sessionStorage.setItem('authNr', uValidation);
-    this.setState({ authNrSent: true, validationOverlay: true, signUpOverlay: false, signInOverlay: false });
+    this.setState({ authNrSent: true, validationOverlay: true, signUpOverlay: false, signInOverlay: false, uValidation: uValidation });
 
-      const mailjet = require ('node-mailjet')
-      .connect('3a81fc2e9fd8aa4b0c7388a3b2216c93', '7ff28ce767dc928dcfb127b23b211725')
-      const request = mailjet
-      .post("send", {'version': 'v3.1'})
-      .request({
-        "Messages":[
-          {
-            "From": {
-              "Email": "info@syn4ny.com",
-              "Name": "Admin"
-            },
-            "To": [
-              {
-                "Email": `${mail}`,
-                "Name": `${uname}`
-              }
-            ],
-            "Subject": "Welcome to SYN4NY.",
-            "TextPart": "",
-            "HTMLPart": `<h3>Dear ${uname},</h3><br />Welcome to the <h3><a href='https://www.syn4ny.com/'>Syn4ny</a>!</h3><br />! Your registration code is ${uValidation}`,
-            "CustomID": "GettingStarted"
-          }
-        ]
-      })
-      request
-        .then((result) => {
-          console.log(result.body)
-        })
-        .catch((err) => {
-          console.log(err.statusCode)
-        })
+      // const mailjet = require ('node-mailjet')
+      // .connect('3a81fc2e9fd8aa4b0c7388a3b2216c93', '7ff28ce767dc928dcfb127b23b211725')
+      // const request = mailjet
+      // .post("send", {'version': 'v3.1'})
+      // .request({
+      //   "Messages":[
+      //     {
+      //       "From": {
+      //         "Email": "info@syn4ny.com",
+      //         "Name": "Admin"
+      //       },
+      //       "To": [
+      //         {
+      //           "Email": `${mail}`,
+      //           "Name": `${uname}`
+      //         }
+      //       ],
+      //       "Subject": "Welcome to SYN4NY.",
+      //       "TextPart": "",
+      //       "HTMLPart": `<h3>Dear ${uname},</h3><br />Welcome to the <h3><a href='https://www.syn4ny.com/'>Syn4ny</a>!</h3><br />! Your registration code is ${uValidation}`,
+      //       "CustomID": "GettingStarted"
+      //     }
+      //   ]
+      // })
+      // request
+      //   .then((result) => {
+      //     console.log(result.body)
+      //   })
+      //   .catch((err) => {
+      //     console.log(err.statusCode)
+      //   })
   }
 
   validateUser(event) {
@@ -227,12 +226,12 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const { isMobile, loggedIn, email, password, signUpOverlay, signInOverlay, validationOverlay, uname, mail, upassword, validateNr, signUpSuccess, signInSuccess } = this.state;
+    const { isMobile, loggedIn, email, password, signUpOverlay, signInOverlay, validationOverlay, uname, mail, upassword, validateNr, signUpSuccess, signInSuccess, uValidation } = this.state;
     const { signType } = this.props;
 
     const signUpError = signUpSuccess === false;
     const h1 = `Thank you, ${uname}!`;
-    const h2 = `We have just sent to your email ${mail} verification code,`;
+    const h2 = `We have just generated verification code- ${uValidation}`;
     const h2_opt = `Please submit here:`;
     const validationForm = (
       <form onSubmit={this.validateUser} className="sign-up-form">
