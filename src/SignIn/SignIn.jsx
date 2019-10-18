@@ -1,8 +1,7 @@
 import React from 'react';
-import { getCookie, setCookie } from '../functions.js';
+import { getCookie } from '../functions.js';
 import { connect } from 'react-redux';
 import { signInAction } from '../actions/signActions.js';
-import axios from 'axios';
 const hashed = require('password-hash');
 
 const Cosmic = require('cosmicjs')({

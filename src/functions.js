@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export function getCookie(name) {
   var nameEQ = name + "=";
   var ca = document.cookie.split(';');

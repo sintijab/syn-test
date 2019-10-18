@@ -40,7 +40,7 @@ class PostForm extends React.Component{
 
   componentDidUpdate() {
     const { profileData, postAddedAction, submit } = this.props;
-    const { userData, postAdded, title, author, date } = this.state;
+    const { userData, postAdded } = this.state;
 
     if (profileData.type === 'GET_PROFILE' && userData !== profileData.profileDetails) {
       this.setState({

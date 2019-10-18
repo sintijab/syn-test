@@ -1,6 +1,5 @@
 import React from 'react';
 import menuIcon1 from '../img/menu01.png';
-import menuIcon2 from '../img/menu02.png';
 import menuIcon3 from '../img/menu03.png';
 import menuIcon4 from '../img/menu04.png';
 
