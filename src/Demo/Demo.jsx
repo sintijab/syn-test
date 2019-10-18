@@ -20,9 +20,15 @@ class Demo extends React.Component {
 
   componentDidUpdate() {
     const { activeImgSrcThirdSection, imgVisibility } = this.state;
-    if (activeImgSrcThirdSection < 116 && !imgVisibility) {
+    if (!imgVisibility) {
+    setTimeout(() => {
+      this.setState({
+        imgVisibility: true,
+      })}, 300);
+    }
+    if (activeImgSrcThirdSection < 116 && imgVisibility) {
       this.getDemoSrc();
-    } else if (!imgVisibility) {
+    } else if (imgVisibility) {
       this.setState({ activeImgSrcFirstSection: 0, activeImgSrcSecondSection: 1, activeImgSrcThirdSection: 2  });
     }
   }
@@ -37,10 +43,6 @@ class Demo extends React.Component {
           activeImgSrcThirdSection: activeImgSrcThirdSection + 3,
           imgVisibility: false
         });
-        setTimeout(() => {
-          _this.setState({
-            imgVisibility: true,
-          })}, 200);
         }, 5000);
   }
 
