@@ -36,13 +36,12 @@ class Demo extends React.Component {
           activeImgSrcSecondSection: activeImgSrcSecondSection + 3,
           activeImgSrcThirdSection: activeImgSrcThirdSection + 3,
           imgVisibility: false
-        })}, 5000);
-        if (!imgVisibility) {
-          setTimeout(() => {
-            _this.setState({
-              imgVisibility: true,
-            })}, 200);
-        }
+        });
+        setTimeout(() => {
+          _this.setState({
+            imgVisibility: true,
+          })}, 10);
+        }, 5000);
   }
 
   componentDidMount() {
