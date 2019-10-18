@@ -3,7 +3,7 @@
   "name": "SYN4NY",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "favicons.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     }
