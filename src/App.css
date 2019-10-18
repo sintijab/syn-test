@@ -536,6 +536,12 @@ button:focus {
   left: 0;
   right: 0;
   margin: auto;
+  opacity: 0;
+}
+
+.device-img-active {
+  transition: opacity .2s ease-in;
+  opacity: 1;
 }
 
 .device-bg-sector {

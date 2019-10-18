@@ -13,29 +13,36 @@ class Demo extends React.Component {
       activeImgSrcFirstSection: 0,
       activeImgSrcSecondSection: 1,
       activeImgSrcThirdSection: 2,
+      imgVisibility: true,
     }
     this.getDemoSrc = this.getDemoSrc.bind(this);
   }
 
   componentDidUpdate() {
-    const { activeImgSrcThirdSection} = this.state;
-    if (activeImgSrcThirdSection < 116) {
+    const { activeImgSrcThirdSection, imgVisibility } = this.state;
+    if (activeImgSrcThirdSection < 116 && !imgVisibility) {
       this.getDemoSrc();
-    } else {
+    } else if (!imgVisibility) {
       this.setState({ activeImgSrcFirstSection: 0, activeImgSrcSecondSection: 1, activeImgSrcThirdSection: 2  });
     }
   }
 
   getDemoSrc() {
-    const { activeImgSrcFirstSection, activeImgSrcSecondSection, activeImgSrcThirdSection} = this.state;
+    const { activeImgSrcFirstSection, activeImgSrcSecondSection, activeImgSrcThirdSection, imgVisibility } = this.state;
     const _this = this;
-
       setTimeout(() => {
         _this.setState({
           activeImgSrcFirstSection: activeImgSrcFirstSection + 3,
           activeImgSrcSecondSection: activeImgSrcSecondSection + 3,
           activeImgSrcThirdSection: activeImgSrcThirdSection + 3,
-        })}, 6000);
+          imgVisibility: false
+        })}, 5000);
+        if (!imgVisibility) {
+          setTimeout(() => {
+            _this.setState({
+              imgVisibility: true,
+            })}, 10);
+        }
   }
 
   componentDidMount() {
@@ -43,16 +50,17 @@ class Demo extends React.Component {
   }
 
   render() {
-    const { isMobile, activeImgSrcFirstSection, activeImgSrcSecondSection, activeImgSrcThirdSection } = this.state;
+    const { isMobile, activeImgSrcFirstSection, activeImgSrcSecondSection, activeImgSrcThirdSection, imgVisibility } = this.state;
     let images = gallery;
+    const deviceImgClassName = imgVisibility ? 'device-img device-img-active' : 'device-img';
 
       if (!isMobile) {
         return (
           <div>
             <div className="device-bg">
-              <div className="device-bg-sector"><img src={images.default[activeImgSrcFirstSection]} className="device-img" alt="bg" /></div>
-              <div className="device-bg-sector"><img src={images.default[activeImgSrcSecondSection]} className="device-img" alt="bg" /></div>
-              <div className="device-bg-sector"><img src={images.default[activeImgSrcThirdSection]} className="device-img" alt="bg" /></div>
+              <div className="device-bg-sector"><img src={images.default[activeImgSrcFirstSection]} className={deviceImgClassName} alt="bg" /></div>
+              <div className="device-bg-sector"><img src={images.default[activeImgSrcSecondSection]} className={deviceImgClassName} alt="bg" /></div>
+              <div className="device-bg-sector"><img src={images.default[activeImgSrcThirdSection]} className={deviceImgClassName} alt="bg" /></div>
             </div>
             <div className="device-frame">
               <img src={device01} className="device" alt="bg" />
