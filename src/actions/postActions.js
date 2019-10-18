@@ -31,7 +31,7 @@ export const fetchPostAction = postsData => dispatch => {
             const defaultNumber = Math.floor((Math.random() * 3) + 1);
             post.metadata.img = defaultNumber === 1 ? defaultPostImg1 : defaultNumber === 2 ? defaultPostImg2 : defaultPostImg3;
           }
-        });
+        })
         dispatch({
          type: POSTS_FETCHED,
          payload: postItems

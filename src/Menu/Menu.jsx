@@ -112,7 +112,8 @@ class Menu extends React.Component {
         }
       }
 
-    if (userData && postsState && postsState.length && (userStoredPosts.length !== userData.object.metadata.storedPostIds.length ||
+    if (userData && userData.object.metadata.storedPostIds && postsState && postsState.length && userStoredPosts &&
+      (userStoredPosts.length !== userData.object.metadata.storedPostIds.length ||
       submittedPosts.length !== (postsState.filter(obj => obj.metadata.author === userId).length))) {
         const storedPostIds = userData.object.metadata.storedPostIds;
         const updateUserStoredPosts = storedPostIds && storedPostIds.length && (storedPosts.length === 0 || userStoredPosts.length !== storedPostIds.length);
