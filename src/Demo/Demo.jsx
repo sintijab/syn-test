@@ -1,5 +1,4 @@
 import React from 'react';
-import { getCookie } from '../functions.js';
 import device01 from '../img/device01.png';
 import device02 from '../img/device02.png';
 import device03 from '../img/device03.png';
@@ -10,7 +9,6 @@ class Demo extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loggedIn: !!(getCookie('val')),
       isMobile: !!(window.innerWidth < 479),
       activeImgSrcFirstSection: 0,
       activeImgSrcSecondSection: 1,
@@ -45,10 +43,10 @@ class Demo extends React.Component {
   }
 
   render() {
-    const { isMobile, loggedIn, activeImgSrcFirstSection, activeImgSrcSecondSection, activeImgSrcThirdSection } = this.state;
+    const { isMobile, activeImgSrcFirstSection, activeImgSrcSecondSection, activeImgSrcThirdSection } = this.state;
     let images = gallery;
 
-      if (!isMobile && !loggedIn) {
+      if (!isMobile) {
         return (
           <div>
             <div className="device-bg">
