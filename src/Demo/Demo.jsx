@@ -41,7 +41,7 @@ class Demo extends React.Component {
           setTimeout(() => {
             _this.setState({
               imgVisibility: true,
-            })}, 10);
+            })}, 100);
         }
   }
 
