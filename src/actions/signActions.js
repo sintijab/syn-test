@@ -4,7 +4,7 @@ import axios from 'axios';
 const hashed = require('password-hash');
 
 export const signInAction = (email, password) => dispatch => {
-  const contributorId = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9Ac3luNG55LmNvbSIsInBhc3N3b3JkIjoiMmU5YmE4MmQ5YTMwYjZkMzkxNDNhNDRiZDJiZmYyMTQiLCJpYXQiOjE1NzAzOTI4MTN9.z-X-dCaFXxMKxjXBy46d9y62H3OMZKXM6qlcU1Q_Sf0';
+  const contributorId = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9Ac3luNG55LmNvbSIsInBhc3N3b3JkIjoiMmU5YmE4MmQ5YTMwYjZkMzkxNDNhNDRiZDJiZmYyMTQiLCJpYXQiOjE1NzE0MTE2NTJ9.bVld9Hp_sukxhdFWvhXysHA90-62JeuRUDPUVvVQJAg';
 
   let adjustedEmail = email.replace("@", "");
   let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "").toLowerCase();
