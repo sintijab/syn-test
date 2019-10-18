@@ -26,7 +26,8 @@ export const fetchPostAction = postsData => dispatch => {
       let postItems = response.objects || [];
       if (postItems && postItems.length) {
         postItems.forEach(post => {
-          const isSourceValid = validateImgSource(post.metadata.img);
+          let isSourceValid = validateImgSource(post.metadata.img);
+          if (post.metadata.author === 'info@syn4ny.com') { isSourceValid = true; }
           if (!isSourceValid) {
             const defaultNumber = Math.floor((Math.random() * 3) + 1);
             post.metadata.img = defaultNumber === 1 ? defaultPostImg1 : defaultNumber === 2 ? defaultPostImg2 : defaultPostImg3;
