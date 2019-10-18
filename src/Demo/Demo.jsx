@@ -28,7 +28,7 @@ class Demo extends React.Component {
   }
 
   getDemoSrc() {
-    const { activeImgSrcFirstSection, activeImgSrcSecondSection, activeImgSrcThirdSection, imgVisibility } = this.state;
+    const { activeImgSrcFirstSection, activeImgSrcSecondSection, activeImgSrcThirdSection } = this.state;
     const _this = this;
       setTimeout(() => {
         _this.setState({
@@ -40,7 +40,7 @@ class Demo extends React.Component {
         setTimeout(() => {
           _this.setState({
             imgVisibility: true,
-          })}, 10);
+          })}, 100);
         }, 5000);
   }
 
