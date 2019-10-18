@@ -81,7 +81,7 @@ export const getPostsAction = () => dispatch => {
 }
 
 export const addPostAction = formData => dispatch => {
-  const { title, about, imgurl, period, plan, info, city, author, userData } = formData;
+  const { title, about, imgurl, period, plan, info, city, author } = formData;
 
   let date = new Date();
   let dd = String(date.getDate()).padStart(2, '0');

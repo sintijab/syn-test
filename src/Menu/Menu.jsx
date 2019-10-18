@@ -31,7 +31,6 @@ class Menu extends React.Component {
       storedPosts: [],
       submittedPosts: [],
       userStoredPosts: [],
-      userSubmittedPosts: [],
     }
     this.expandMenu = this.expandMenu.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
@@ -71,7 +70,7 @@ class Menu extends React.Component {
 
 
   componentDidUpdate() {
-    const { menuVisible, displayOverlay, loggedIn, isMobile, userData, userId, postsState, storedPosts, submittedPosts, userStoredPosts, userSubmittedPosts  } = this.state;
+    const { menuVisible, displayOverlay, loggedIn, isMobile, userData, userId, postsState, storedPosts, submittedPosts, userStoredPosts } = this.state;
     const { signType, profileData, posts, post} = this.props;
     if (!menuVisible && displayOverlay) {
       this.setState({ displayOverlay: false });
