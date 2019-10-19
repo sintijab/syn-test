@@ -43,7 +43,7 @@ class Demo extends React.Component {
           activeImgSrcThirdSection: activeImgSrcThirdSection + 3,
           imgVisibility: false
         });
-        }, 5000);
+      }, 4000);
   }
 
   componentDidMount() {
