@@ -13,7 +13,7 @@ if (mail) {
       slug: data.buckets[0].slug,
       read_key: data.buckets[0].api_access.read_key
     })
-    let adjustedEmail = mail.replace("@", "");
+    let adjustedEmail = mail.replace("@", "").replace(/_/g, '-');
     let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "").toLowerCase();;
     bucket.getObject({
       slug: emailEncoded
@@ -42,7 +42,7 @@ export const editUserDetailsAction = (userData, postId, storePostToAccount, stor
       write_key: data.buckets[0].api_access.write_key
     })
     let mail = getCookie('sId');
-    let adjustedEmail = mail.replace("@", "");
+    let adjustedEmail = mail.replace("@", "").replace(/_/g, '-');
     let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "").toLowerCase();;
 
     const userIdMetadield = profileData.filter(obj => obj.key === 'uid');

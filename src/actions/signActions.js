@@ -2,15 +2,25 @@ import { LOGGED_IN, LOGGED_OUT } from "./types"
 import { setCookie, getCookie } from '../functions.js';
 import axios from 'axios';
 const hashed = require('password-hash');
+let Cosmic = require('cosmicjs')()
+let contributorId = null
+
+Cosmic.authenticate({
+  email: 'info@syn4ny.com',
+  password: 'Memorable123321.',
+}).then(data => {
+  Cosmic = require('cosmicjs')({
+    token: data.token
+  })
+  contributorId = data.token
+})
+.catch(err => {
+  console.error(err)
+})
 
 export const signInAction = (email, password) => dispatch => {
-  const contributorId = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9Ac3luNG55LmNvbSIsInBhc3N3b3JkIjoiMmU5YmE4MmQ5YTMwYjZkMzkxNDNhNDRiZDJiZmYyMTQiLCJpYXQiOjE1NzM3NDk3NjB9.byu_voeG2_h2fVryd5BZk65VQdFgTgvoEQMxtf2JRiU';
-
-  let adjustedEmail = email.replace("@", "");
+  let adjustedEmail = email.replace(/@/g, "").replace(/_/g, '-');
   let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "").toLowerCase();
-  const Cosmic = require('cosmicjs')({
-    token: contributorId // optional
-  })
   Cosmic.getBuckets()
   .then(data => {
     const bucket = Cosmic.bucket({
@@ -30,8 +40,8 @@ export const signInAction = (email, password) => dispatch => {
       let responseData = response.object.metadata.uid;
       const logInSuccess = hashed.verify(JSON.stringify(password), responseData);
       if (logInSuccess) {
-        setCookie('val', contributorId, 1);
         setCookie('sId', email, 1);
+        setCookie('val', contributorId, 1);
 
         dispatch({
          type: LOGGED_IN,
@@ -98,9 +108,9 @@ export const signStatusAction = () => dispatch => {
 export const getCurrentLocation = () => {
   axios.get(`http://api.ipstack.com/79.224.135.162?access_key=5e516d5bae0bfa0abd9896479873ad01`)
   .then(function (response) {
-    if (response && response.data && response.data.city) {
-      setCookie('city', response.data.city, 1);
-      return response.data.city;
+    if (response && response.data && response.data.country_name) {
+      setCookie('country', response.data.country_name, 1);
+      return response.data.country_name;
     }
   })
   .catch(function (error) {

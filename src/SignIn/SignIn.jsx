@@ -1,11 +1,19 @@
 import React from 'react';
-import { getCookie } from '../functions.js';
+import { getCookie, setCookie } from '../functions.js';
 import { connect } from 'react-redux';
 import { signInAction } from '../actions/signActions.js';
 const hashed = require('password-hash');
-
-const Cosmic = require('cosmicjs')({
-  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImluZm9Ac3luNG55LmNvbSIsInBhc3N3b3JkIjoiMmU5YmE4MmQ5YTMwYjZkMzkxNDNhNDRiZDJiZmYyMTQiLCJpYXQiOjE1NzE0MTE2NTJ9.bVld9Hp_sukxhdFWvhXysHA90-62JeuRUDPUVvVQJAg'
+let Cosmic = require('cosmicjs')()
+Cosmic.authenticate({
+  email: 'info@syn4ny.com',
+  password: 'Memorable123321.',
+}).then(data => {
+  Cosmic = require('cosmicjs')({
+    token: data.token
+  })
+})
+.catch(err => {
+  console.error(err)
 })
 
 class SignIn extends React.Component {
@@ -68,7 +76,7 @@ class SignIn extends React.Component {
 
   sendUDetails(uname, mail, upassword) {
     var hId = hashed.generate(JSON.stringify(upassword));
-    let adjustedEmail = mail.replace("@", "");
+    let adjustedEmail = mail.replace("@", "").replace(/_/g, '-');
     let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "");
 
     const params = {
@@ -99,14 +107,18 @@ class SignIn extends React.Component {
           type: 'text',
           children: null
         },
+        {
+          value: '5d45c54b82503a56f1d980bc',
+          key: 'storedPostIds',
+          title: 'storedPostIds',
+          type: 'text',
+          children: null
+        },
       ],
       options: {
         slug_field: false
       }
     }
-    const Cosmic = require('cosmicjs')({
-      token: getCookie('val') // optional
-    })
     Cosmic.getBuckets()
     .then(data => {
       const bucket = Cosmic.bucket({

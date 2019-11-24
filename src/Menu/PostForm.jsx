@@ -16,7 +16,7 @@ class PostForm extends React.Component{
       period: '',
       plan: '',
       info: '',
-      city: getCookie('city'),
+      city: getCookie('country'),
       author: getCookie('sId'),
       userData: null,
       postAdded: false,
