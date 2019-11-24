@@ -31,6 +31,11 @@ class Post extends React.Component {
       if (userData.object.metadata.storedPostIds && userData.object.metadata.storedPostIds.indexOf(cosmic.posts.postsData[0]._id) !== -1 && !btnActiveState) {
         this.setState({ btnActiveState: true });
       }
+      if (profileData && profileData.profileDetails) {
+        this.setState({
+          userData: profileData.profileDetails,
+        })
+      }
     }
 
     if (profileData.type === 'GET_PROFILE' && !userData) {
