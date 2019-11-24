@@ -111,15 +111,17 @@ class Menu extends React.Component {
           this.getUserPosts(storedPostIds, postsState);
         }
       }
-
-    if (userData && userData.object.metadata.storedPostIds && postsState && postsState.length && userStoredPosts &&
-      (userStoredPosts.length !== userData.object.metadata.storedPostIds.length ||
-      submittedPosts.length !== (postsState.filter(obj => obj.metadata.author === userId).length))) {
+    const hasRequiredData = userData && userData.object.metadata.storedPostIds && postsState && !!postsState.length && userStoredPosts;
+    if (hasRequiredData !== null) {
+      const hasStoredPosts = userStoredPosts.length !== userData.object.metadata.storedPostIds.length;
+      const hasSubmittedPosts = submittedPosts.length !== postsState.filter(obj => obj.metadata.author === userId).length;
+      if (hasStoredPosts || hasSubmittedPosts) {
         const storedPostIds = userData.object.metadata.storedPostIds;
         const updateUserStoredPosts = storedPostIds && storedPostIds.length && (storedPosts.length === 0 || userStoredPosts.length !== storedPostIds.length);
-        if (userData && postsState && (updateUserStoredPosts)) {
+        if (userData && postsState && (updateUserStoredPosts || hasSubmittedPosts)) {
           this.getUserPosts(storedPostIds, postsState);
         }
+      }
       }
 
     if (post && post.type && post.type === 'POST_ADDED' &&
