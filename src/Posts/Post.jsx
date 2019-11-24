@@ -26,11 +26,11 @@ class Post extends React.Component {
   }
 
   componentDidUpdate() {
-    const { cosmic, profileData, nextPostState } = this.props;
+    const { postsByLocation, profileData, nextPostState } = this.props;
     const { activePost, userData, btnActiveState, storedPostIds, disableBtnValidation } = this.state;
-    if (cosmic && cosmic.posts && cosmic.posts.postsData.length && !activePost && userData) {
-      this.setState({ activePost: cosmic.posts.postsData[0], activeIndex: 0 });
-      if (userData.object.metadata.storedPostIds && userData.object.metadata.storedPostIds.indexOf(cosmic.posts.postsData[0]._id) !== -1 && !btnActiveState) {
+    if (postsByLocation && postsByLocation.length && !activePost && userData) {
+      this.setState({ activePost: postsByLocation[0], activeIndex: 0 });
+      if (userData.object.metadata.storedPostIds && userData.object.metadata.storedPostIds.indexOf(postsByLocation[0]._id) !== -1 && !btnActiveState) {
         this.setState({ btnActiveState: true });
       }
       if (profileData && profileData.profileDetails) {
@@ -65,11 +65,11 @@ class Post extends React.Component {
   }
 
   nextItem() {
-    const { cosmic, firstIndex } = this.props;
+    const { postsByLocation, firstIndex } = this.props;
     const { activeIndex } = this.state;
-    if (cosmic && cosmic.posts && cosmic.posts.postsData.length) {
+    if (postsByLocation && postsByLocation.length) {
       const nextIndex = activeIndex ? activeIndex : firstIndex;
-      this.setState({ activePost: cosmic.posts.postsData[nextIndex + 1], activeIndex: nextIndex + 1, disableBtnValidation: false });
+      this.setState({ activePost: postsByLocation[nextIndex + 1], activeIndex: nextIndex + 1, disableBtnValidation: false });
       this.props.nextPostAction();
     }
   }

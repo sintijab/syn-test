@@ -31,6 +31,7 @@ class Menu extends React.Component {
       storedPosts: [],
       submittedPosts: [],
       userStoredPosts: [],
+      location: getCookie('location'),
     }
     this.expandMenu = this.expandMenu.bind(this);
     this.toggleOverlay = this.toggleOverlay.bind(this);
@@ -92,13 +93,16 @@ class Menu extends React.Component {
       this.getUserPosts(profileData.profileUpdateDetails, postsState);
     }
     if (posts.type === 'POSTS_FETCHED' && !postsState.length) {
+      const uLocation = getCookie('location')
+      const filterPostsByLocation = posts.postsData.filter(post => post.metadata.location === uLocation || post.metadata.location === 'Global');
       this.setState({
-        postsState: posts.postsData,
-        activePost: posts.postsData[0],
+        postsState: filterPostsByLocation,
+        activePost: filterPostsByLocation[0],
         activeIndex: 0,
         loading: false,
         fetchPosts: true,
         loggedIn: true,
+        location: getCookie('location'),
       });
     }
 

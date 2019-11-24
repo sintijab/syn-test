@@ -16,10 +16,11 @@ class Posts extends React.Component {
       isMobile: !!(window.innerWidth < 479),
       loggedIn: !!(getCookie('val')),
       fetchPosts: null,
-      cosmic: null,
+      postsByLocation: null,
       imageIsValid: false,
       activePost: null,
       activeIndex: null,
+      location: getCookie('location'),
     }
   }
 
@@ -33,34 +34,33 @@ class Posts extends React.Component {
 
   componentDidUpdate() {
     const { posts, signType } = this.props;
-    const { isMobile, fetchPosts, cosmic } = this.state;
-    const { postsData = [] } = posts;
-
-    if (signType === 'LOGGED_IN' && isMobile && !fetchPosts) {
-      this.props.getUserDetailsAction();
-      this.props.fetchPostAction();
-      this.setState({ fetchPosts: true });
-    }
-    if (posts.type === 'POSTS_FETCHED' && !cosmic) {
-      this.setState({
-        cosmic: {
-          posts: posts,
-        },
-        activePost: postsData[0],
-        activeIndex: 0,
-        loading: false,
-        fetchPosts: true,
-        loggedIn: true,
-      });
+    const { isMobile, fetchPosts, postsByLocation, location } = this.state;
+    if (posts && posts.postsData) {
+      const filterPostsByLocation = posts.postsData.filter(post => post.metadata.location === location || post.metadata.location === 'Global');
+      if (signType === 'LOGGED_IN' && isMobile && !fetchPosts) {
+        this.props.getUserDetailsAction();
+        this.props.fetchPostAction();
+        this.setState({ fetchPosts: true });
+      }
+      if (posts.type === 'POSTS_FETCHED' && !postsByLocation) {
+        this.setState({
+          postsByLocation: filterPostsByLocation,
+          activePost: filterPostsByLocation[0] || {},
+          activeIndex: 0,
+          loading: false,
+          fetchPosts: true,
+          loggedIn: true,
+        });
+      }
     }
   }
 
   render() {
-    const { isMobile, loggedIn, cosmic, imageIsValid, activePost, activeIndex } = this.state;
+    const { isMobile, loggedIn, postsByLocation, imageIsValid, activePost, activeIndex } = this.state;
       if (isMobile && loggedIn) {
         return (
           <div className="post-feed">
-          <Post isMobile={isMobile} loggedIn={loggedIn} cosmic={cosmic} imageIsValid={imageIsValid} firstPost={activePost} firstIndex={activeIndex} />
+          <Post isMobile={isMobile} loggedIn={loggedIn} postsByLocation={postsByLocation} imageIsValid={imageIsValid} firstPost={activePost} firstIndex={activeIndex} />
          </div>
        );
       }

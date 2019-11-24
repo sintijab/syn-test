@@ -82,7 +82,7 @@ export const getPostsAction = () => dispatch => {
 }
 
 export const addPostAction = formData => dispatch => {
-  const { title, about, imgurl, period, plan, info, city, author } = formData;
+  const { title, about, imgurl, period, plan, info, location, author } = formData;
 
   let date = new Date();
   let dd = String(date.getDate()).padStart(2, '0');
@@ -134,9 +134,9 @@ export const addPostAction = formData => dispatch => {
         children: null
       },
       {
-        value: city,
-        key: 'city',
-        title: 'City (range)',
+        value: location,
+        key: 'location',
+        title: 'Location (range)',
         type: 'text',
         children: null
       },

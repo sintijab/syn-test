@@ -42,12 +42,11 @@ export const signInAction = (email, password) => dispatch => {
       if (logInSuccess) {
         setCookie('sId', email, 1);
         setCookie('val', contributorId, 1);
-
+        getCurrentLocation();
         dispatch({
          type: LOGGED_IN,
          payload: email
         })
-        getCurrentLocation();
         if(response.object.metadata.storedPostIds) {
           localStorage.setItem('storedPostIds', response.object.metadata.storedPostIds);
         }
