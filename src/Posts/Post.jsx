@@ -17,6 +17,8 @@ class Post extends React.Component {
       activeIndex: null,
       btnActiveState: false,
       userData: null,
+      storedPostIds: null,
+      disableBtnValidation: false,
     }
     this.expandInfo = this.expandInfo.bind(this);
     this.nextItem = this.nextItem.bind(this);
@@ -25,7 +27,7 @@ class Post extends React.Component {
 
   componentDidUpdate() {
     const { cosmic, profileData, nextPostState } = this.props;
-    const { activePost, userData, btnActiveState } = this.state;
+    const { activePost, userData, btnActiveState, storedPostIds, disableBtnValidation } = this.state;
     if (cosmic && cosmic.posts && cosmic.posts.postsData.length && !activePost && userData) {
       this.setState({ activePost: cosmic.posts.postsData[0], activeIndex: 0 });
       if (userData.object.metadata.storedPostIds && userData.object.metadata.storedPostIds.indexOf(cosmic.posts.postsData[0]._id) !== -1 && !btnActiveState) {
@@ -41,14 +43,19 @@ class Post extends React.Component {
     if (profileData.type === 'GET_PROFILE' && !userData) {
       this.setState({
         userData: profileData.profileDetails,
+        storedPostIds: profileData.profileDetails.object.metadata.storedPostIds
       })
     }
-    if (userData && activePost && nextPostState.postsState && nextPostState.postsState.type === 'NEXT_POST') {
-      if (userData.object.metadata.storedPostIds && userData.object.metadata.storedPostIds.indexOf(activePost._id) !== -1 && !btnActiveState) {
-        this.setState({ btnActiveState: !btnActiveState });
-      } else if (userData.object.metadata.storedPostIds && userData.object.metadata.storedPostIds.indexOf(activePost._id) === -1 && btnActiveState) {
-        this.setState({ btnActiveState: !btnActiveState });
-      }
+    if (userData && profileData.profileUpdateDetails && profileData.profileUpdateDetails.object.metadata.storedPostIds !== storedPostIds) {
+        this.setState({ storedPostIds: profileData.profileUpdateDetails.object.metadata.storedPostIds })
+    }
+
+    if (userData && activePost && nextPostState.postsState && nextPostState.postsState.type === 'NEXT_POST' &&
+      storedPostIds.indexOf(activePost._id) !== -1 && !btnActiveState && !disableBtnValidation) {
+      this.setState({ btnActiveState: true });
+    } else if (userData && activePost && nextPostState.postsState && nextPostState.postsState.type === 'NEXT_POST' &&
+      storedPostIds.indexOf(activePost._id) === -1 && btnActiveState && !disableBtnValidation) {
+        this.setState({ btnActiveState: false });
     }
   }
 
@@ -62,15 +69,14 @@ class Post extends React.Component {
     const { activeIndex } = this.state;
     if (cosmic && cosmic.posts && cosmic.posts.postsData.length) {
       const nextIndex = activeIndex ? activeIndex : firstIndex;
-      this.setState({ activePost: cosmic.posts.postsData[nextIndex + 1], activeIndex: nextIndex + 1 });
+      this.setState({ activePost: cosmic.posts.postsData[nextIndex + 1], activeIndex: nextIndex + 1, disableBtnValidation: false });
       this.props.nextPostAction();
     }
   }
 
   savePost() {
     const { btnActiveState, activePost, userData } = this.state;
-    this.setState({ btnActiveState: !btnActiveState });
-
+    this.setState({ btnActiveState: !btnActiveState, disableBtnValidation: true });
     if (activePost && !btnActiveState) {
       this.props.editUserDetailsAction(userData, activePost._id, true, 'store');
     } else if (activePost && btnActiveState) {
@@ -122,4 +128,4 @@ const mapStateToProps = state => ({
   nextPostState: state,
 })
 
-export default connect(mapStateToProps, { getUserDetailsAction, editUserDetailsAction, nextPostAction })(Post);
+export default connect(mapStateToProps, { getUserDetailsAction, editUserDetailsAction, editUserDetailsAction, getUserDetailsAction, nextPostAction })(Post);

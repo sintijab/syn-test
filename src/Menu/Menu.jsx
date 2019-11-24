@@ -106,7 +106,7 @@ class Menu extends React.Component {
       userStoredPosts.length !== profileData.profileUpdateDetails.object.metadata.storedPostIds.length)) {
         const uData = profileData.profileUpdateDetails;
         const storedPostIds = uData.object.metadata.storedPostIds;
-        const updateUserStoredPosts = storedPostIds && storedPostIds.length && (storedPosts.length === 0 || userStoredPosts.length !== storedPostIds.length);
+        const updateUserStoredPosts = (storedPostIds && storedPostIds.length && storedPosts.length === 0) || userStoredPosts.length !== storedPostIds.length;
         if (uData && postsState && (updateUserStoredPosts)) {
           this.getUserPosts(storedPostIds, postsState);
         }
