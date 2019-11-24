@@ -109,7 +109,7 @@ export const getCurrentLocation = () => {
   axios.get(`http://api.ipstack.com/79.224.135.162?access_key=5e516d5bae0bfa0abd9896479873ad01`)
   .then(function (response) {
     if (response && response.data && response.data.country_name) {
-      setCookie('country', response.data.country_name, 1);
+      setCookie('location', response.data.country_name, 1);
       return response.data.country_name;
     }
   })

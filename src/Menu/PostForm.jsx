@@ -16,7 +16,7 @@ class PostForm extends React.Component{
       period: '',
       plan: '',
       info: '',
-      city: getCookie('country'),
+      location: getCookie('location'),
       author: getCookie('sId'),
       userData: null,
       postAdded: false,
@@ -67,15 +67,15 @@ class PostForm extends React.Component{
 
   handleSubmit(event) {
     event.preventDefault();
-    const { title, about, imgurl, period, plan, info, city, author, userData } = this.state;
+    const { title, about, imgurl, period, plan, info, location, author, userData } = this.state;
     const formData = {
       title: title,
       about: about,
       imgurl: imgurl,
       period: period,
       plan: plan,
-      info:info,
-      city: city,
+      info: info,
+      location: location,
       author: author,
       userData: userData
     };
@@ -97,7 +97,7 @@ class PostForm extends React.Component{
 
 
   render() {
-    const { title = '', about, imgurl, period, plan, info, city = '' } = this.state;
+    const { title = '', about, imgurl, period, plan, info, location = '' } = this.state;
     const { toggleOverlay } = this.props;
     const periodOptions = this.getPeriodOptions();
 
@@ -124,9 +124,9 @@ class PostForm extends React.Component{
               <input id="imgurl" value={imgurl} type="url" name="imgurl" className="post_form-control" placeholder="https://" onChange={this.handleChange}/><br/>
             </div>
             <div className="post_form-group-item">
-              <label>Location: </label>
-              <a href="#popup">{city}</a>
-              <span className="post_form-hint"> * upgrade Membership plan to display globally</span><br/>
+              <label>Location where event will be visible: </label>
+              <a href="#l">{location}</a>
+              <span className="post_form-hint"> * default is your current location, upgrade Membership plan to display globally</span><br/>
             </div>
             <button className="btn btn-info post_form-control--submit">Submit</button>
           </div>
