@@ -35,13 +35,13 @@ class Posts extends React.Component {
   componentDidUpdate() {
     const { posts, signType } = this.props;
     const { isMobile, fetchPosts, postsByLocation, location } = this.state;
+    if (signType === 'LOGGED_IN' && isMobile && !fetchPosts) {
+      this.props.getUserDetailsAction();
+      this.props.fetchPostAction();
+      this.setState({ fetchPosts: true });
+    }
     if (posts && posts.postsData) {
       const filterPostsByLocation = posts.postsData.filter(post => post.metadata.location === location || post.metadata.location === 'Global');
-      if (signType === 'LOGGED_IN' && isMobile && !fetchPosts) {
-        this.props.getUserDetailsAction();
-        this.props.fetchPostAction();
-        this.setState({ fetchPosts: true });
-      }
       if (posts.type === 'POSTS_FETCHED' && !postsByLocation) {
         this.setState({
           postsByLocation: filterPostsByLocation,

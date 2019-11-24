@@ -106,7 +106,7 @@ class Menu extends React.Component {
       });
     }
 
-    if (profileData.profileUpdateDetails && (submittedPosts.length !== postsState.filter(obj => obj.metadata.author === userId).length ||
+    if ((profileData.profileUpdateDetails || signType === 'LOGGED_IN') && (submittedPosts.length !== postsState.filter(obj => obj.metadata.author === userId).length ||
       userStoredPosts.length !== profileData.profileUpdateDetails.object.metadata.storedPostIds.length)) {
         const uData = profileData.profileUpdateDetails;
         const storedPostIds = uData.object.metadata.storedPostIds;
