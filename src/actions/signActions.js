@@ -45,7 +45,7 @@ export const signInAction = (email, password) => dispatch => {
 
         dispatch({
          type: LOGGED_IN,
-         payload: logInSuccess
+         payload: email
         })
         getCurrentLocation();
         if(response.object.metadata.storedPostIds) {

@@ -71,12 +71,12 @@ class Menu extends React.Component {
 
   componentDidUpdate() {
     const { menuVisible, displayOverlay, loggedIn, isMobile, userData, userId, postsState, storedPosts, submittedPosts, userStoredPosts } = this.state;
-    const { signType, profileData, posts, post} = this.props;
+    const { signType, profileData, posts, post, uEmail } = this.props;
     if (!menuVisible && displayOverlay) {
       this.setState({ displayOverlay: false });
     }
-    if (signType === 'LOGGED_IN' && isMobile && !loggedIn) {
-      this.setState({ loggedIn: true });
+    if (signType === 'LOGGED_IN' && isMobile && !loggedIn && !userId && uEmail) {
+      this.setState({ loggedIn: true, userId: uEmail });
     }
 
     if (profileData.type === 'GET_PROFILE' && !userData) {
@@ -192,6 +192,7 @@ class Menu extends React.Component {
 const mapStateToProps = state => ({
   error: state.error,
   signType: state.signInStatus.type,
+  uEmail: state.signInStatus.uData,
   posts: state.postsState,
   profileData: state.profileData,
   post: state.postsState,
