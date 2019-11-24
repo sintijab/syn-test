@@ -45,6 +45,7 @@ class PostDetails extends React.Component {
 
     return (
       <div className={`${showDetails ? 'preview_post detailed_post' : 'preview_post'}`} key={data._id} onClick={this.displayDetails}>
+      <div className={`${showDetails ? '' : 'preview_post preview_post-frame'}`}/>
         <div className="preview_post-date">{postDate}</div>
         <div className="preview_post-title">{postTitle}</div>
         {postImage && <img src={postImage} alt="bkg" className="preview_post-img"/>}

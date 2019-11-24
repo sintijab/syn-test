@@ -463,6 +463,7 @@ button:focus {
 }
 
 .preview_post {
+  position: relative;
   display: block;
   height: 6rem;
   overflow-y: hidden;
@@ -471,6 +472,16 @@ button:focus {
   border-radius: .5rem;
   border: .5px solid #e4e4e4;
   box-shadow: 2px 3px 2px #f1f1f1;
+}
+
+.preview_post-frame {
+  position: absolute;
+  margin: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: inset 0 -2px 3px #444444;
 }
 
 .detailed_post {

@@ -86,13 +86,14 @@ class Post extends React.Component {
 
 
   render() {
-    const { isMobile, loggedIn, firstPost } = this.props;
+    const { isMobile, loggedIn, firstPost, postsByLocation } = this.props;
     const { activePost,  showFullInfo, btnActiveState } = this.state;
       if (isMobile && loggedIn && firstPost) {
         const postHeaderClassName = showFullInfo ? "active-post-header active-post-header-active" : "active-post-header";
         const postHeaderTextClassName = showFullInfo ? "active-post-header-text" : "active-post-header-about";
         const postHeaderImgClassName = showFullInfo ? "active-post-img active-post-img-active" : "active-post-img";
         const postHeaderTextTitleClassName = showFullInfo ? "active-post-header-title active-post-header-title-active" : "active-post-header-title";
+        const hasMoreThanOnePost = postsByLocation.length > 1;
         const detailedInformation = (
           <div>
             <span className="active-post-header-text active-post-header-text-title">Actions:</span>
@@ -114,7 +115,7 @@ class Post extends React.Component {
             </div>
             {(firstPost.metadata.img || activePost.metadata.img) &&
               <img src={activePost ? activePost.metadata.img : firstPost.metadata.img} alt="bkg" className={postHeaderImgClassName} />}
-            <img alt="next" src={nextBtn} className="active-post-btn-next" onClick={this.nextItem} />
+            {hasMoreThanOnePost && <img alt="next" src={nextBtn} className="active-post-btn-next" onClick={this.nextItem} />}
             <img alt="next" src={`${btnActiveState ? saveBtnActive : saveBtn}`} className="active-post-btn-save" onClick={this.savePost} />
          </div>
        );
