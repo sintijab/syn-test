@@ -105,10 +105,10 @@ class Menu extends React.Component {
         location: getCookie('location'),
       });
     }
-
-    if ((profileData.profileUpdateDetails || signType === 'LOGGED_IN') && (submittedPosts.length !== postsState.filter(obj => obj.metadata.author === userId).length ||
-      userStoredPosts.length !== profileData.profileUpdateDetails.object.metadata.storedPostIds.length)) {
-        const uData = profileData.profileUpdateDetails;
+    const uDataDetails = profileData.profileUpdateDetails ? profileData.profileUpdateDetails : profileData.profileDetails;
+    if ((profileData.profileUpdateDetails || signType === 'LOGGED_IN') && (submittedPosts.length !== postsState.filter(obj => obj.metadata.author === userId).length || (uDataDetails &&
+      userStoredPosts.length !== uDataDetails.object.metadata.storedPostIds.length))) {
+        const uData = profileData.profileUpdateDetails ? profileData.profileUpdateDetails : profileData.profileDetails;
         const storedPostIds = uData.object.metadata.storedPostIds;
         const updateUserStoredPosts = (storedPostIds && storedPostIds.length && storedPosts.length === 0) || userStoredPosts.length !== storedPostIds.length;
         if (uData && postsState && (updateUserStoredPosts)) {
