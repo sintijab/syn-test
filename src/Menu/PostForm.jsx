@@ -126,7 +126,7 @@ class PostForm extends React.Component{
             <div className="post_form-group-item">
               <label>Location where event will be visible: </label>
               <a href="#l">{location}</a>
-              <span className="post_form-hint"> * default is your current location, upgrade Membership plan to display globally</span><br/>
+              <span className="post_form-hint"> * by default will be your current location</span><br/>
             </div>
             <button className="btn btn-info post_form-control--submit">Submit</button>
           </div>
