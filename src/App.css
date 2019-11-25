@@ -515,6 +515,7 @@ button:focus {
 }
 
 .device {
+  position: absolute;
   display: inline-block;
   height: 70vH;
   margin: 0 1.5rem;
@@ -556,12 +557,51 @@ button:focus {
 }
 
 .device-bg-sector {
-  width: 18vW;
-  height: 100vH;
-  display: inline-block;
+  width: 17.5vW;
+  height: 63vH;
+  display: block;
   overflow-x: hidden;
   top: 0;
-  position: relative;
+  position: absolute;
   bottom: 0;
-  margin: 0 1.5rem;
+  margin: auto 1.7rem;
+  background: #ffffff;
+}
+
+.device-bg-text {
+  position: absolute;
+  display: block;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto 8rem;
+  width: 22vW;
+  height: 20vH;
+  text-align: left;
+  line-height: 2;
+  font-size: 1rem;
+}
+
+.device-bg-intro {
+  color: #431eff;
+  font-size: 1.2rem;
+  border-bottom: .2rem solid yellow;
+  border-radius: 1rem;
+  color: #431eff;
+  font-family: arial;
+  font-size: 1.2rem;
+}
+
+.device-bg-text ul {
+  list-style-type: circle;
+  border-radius: 1rem;
+  margin: 0 2rem 0 0;
+  padding: .1rem 0 .1rem .7rem;
+  color: #1f1f1f;
+  background: #fffc00;
+}
+
+.device-bg-text ul li {
+  margin: .5rem;
+  background: #ffffff;
 }

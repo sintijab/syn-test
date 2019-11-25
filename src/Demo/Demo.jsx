@@ -59,15 +59,16 @@ class Demo extends React.Component {
         return (
           <div>
             <div className="device-bg">
-              <div className="device-bg-sector"><img src={images.default[activeImgSrcFirstSection]} className={deviceImgClassName} alt="bg" /></div>
-              <div className="device-bg-sector"><img src={images.default[activeImgSrcSecondSection]} className={deviceImgClassName} alt="bg" /></div>
-              <div className="device-bg-sector"><img src={images.default[activeImgSrcThirdSection]} className={deviceImgClassName} alt="bg" /></div>
-            </div>
+              <div className="device-bg-sector" style={{left: "18vW"}} ><img src={images.default[activeImgSrcFirstSection]} className={deviceImgClassName}alt="bg" /></div>
+              <div className="device-bg-sector" style={{left: "32vW", zIndex: 100 }}><img src={images.default[activeImgSrcSecondSection]} className={deviceImgClassName} alt="bg" /></div>
+              <div className="device-bg-sector" style={{left: "46vW"}}><img src={images.default[activeImgSrcThirdSection]} className={deviceImgClassName} alt="bg" /></div>
             <div className="device-frame">
-              <img src={device01} className="device" alt="bg" />
-              <img src={device02} className="device" alt="bg" />
-              <img src={device03} className="device" alt="bg" />
+              <img src={device01} className="device" style={{left: "18vW"}} alt="bg" />
+              <img src={device02} className="device" style={{left: "32vW", zIndex: 1000 }} alt="bg" />
+              <img src={device03} className="device" style={{left: "46vW"}} alt="bg" />
            </div>
+           <div className="device-bg-text"><span className="device-bg-intro"><b style={{fontSize: "1.87rem"}}>syn4ny.com</b> for your mobile device: </span><ul><li>explore and join project events</li><li>iniciate new ideas and plans</li><li>get new connections</li></ul></div>
+          </div>
          </div>
        );
       }
