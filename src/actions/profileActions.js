@@ -45,18 +45,18 @@ export const editUserDetailsAction = (userData, postId, storePostToAccount, stor
     let adjustedEmail = mail.replace("@", "").replace(/_/g, '-');
     let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "").toLowerCase();;
 
-    const userIdMetadield = profileData.filter(obj => obj.key === 'uid');
-    const userNameMetadield = profileData.filter(obj => obj.key === 'uname');
-    const userEmailMetadield = profileData.filter(obj => obj.key === 'email');
-    const userPostIds = profileData.filter(obj => obj.key === 'storedPostIds');
+    const userIdMetadield = profileData ? profileData.filter(obj => obj.key === 'uid') : [];
+    const userNameMetadield = profileData ? profileData.filter(obj => obj.key === 'uname') : [];
+    const userEmailMetadield = profileData ? profileData.filter(obj => obj.key === 'email') : [];
+    const userPostIds = profileData ? profileData.filter(obj => obj.key === 'storedPostIds') : [];
 
-    const storeTypeAction = userPostIds.length && storeType === 'store';
+    const storeTypeAction = userPostIds && userPostIds.length && storeType === 'store';
 
-    let newStoredPosts =  userPostIds.length ? `${userPostIds[0].value}` : ``;
+    let newStoredPosts =  userPostIds && userPostIds.length ? `${userPostIds[0].value}` : ``;
 
     let replaceableId = `${postId}`;
     let replaceableIdList = `, ${postId}`;
-    newStoredPosts = storeTypeAction ? `${userPostIds[0].value}` : ``;
+    newStoredPosts = storeTypeAction && userPostIds ? `${userPostIds[0].value}` : ``;
 
     if (newStoredPosts.indexOf(replaceableIdList) !== -1 && !storePostToAccount) {
       const replacedStoredPosts = newStoredPosts.replace(replaceableIdList, "");
