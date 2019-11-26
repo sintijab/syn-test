@@ -6,7 +6,7 @@ const hashed = require('password-hash');
 let Cosmic = require('cosmicjs')()
 Cosmic.authenticate({
   email: 'info@syn4ny.com',
-  password: 'Memorable123321.',
+  password: 'ContributeAccessTest',
 }).then(data => {
   Cosmic = require('cosmicjs')({
     token: data.token
