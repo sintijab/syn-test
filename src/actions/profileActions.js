@@ -30,8 +30,8 @@ if (mail) {
 }
 
 export const editUserDetailsAction = (userData, postId, storePostToAccount, storeType) => dispatch => {
-  const { object } = userData;
-  const { metafields: profileData } = object;
+  const { object } = userData || {};
+  const { metafields: profileData } = object || [];
   const Cosmic = require('cosmicjs')({
     token: getCookie('val') // optional
   })
