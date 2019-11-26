@@ -152,4 +152,4 @@ const mapStateToProps = state => ({
   nextPostState: state,
 })
 
-export default connect(mapStateToProps, { getUserDetailsAction, editUserDetailsAction, editUserDetailsAction, getUserDetailsAction, nextPostAction })(Post);
+export default connect(mapStateToProps, { getUserDetailsAction, editUserDetailsAction, nextPostAction })(Post);

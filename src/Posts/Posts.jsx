@@ -81,7 +81,8 @@ class Posts extends React.Component {
 
         if (window.location.pathname === "" || window.location.pathname === "/") {
           window.history.replaceState(window.location.href, '', `/${filterPostsByLocation[0].slug}`)
-        } else if (window.location.pathname !== "" && window.location.pathname !== "/") {
+        }
+        if (window.location.pathname !== "" && window.location.pathname !== "/") {
           const slugQuery = window.location.pathname.substr(1, window.location.pathname.length);
           activeObj = filterPostsByLocation.filter(obj => obj.slug === slugQuery);
         }
