@@ -24,17 +24,51 @@ class Posts extends React.Component {
     }
   }
 
+
   componentDidMount() {
-    const { loggedIn, isMobile, fetchPosts } = this.state;
+    const { loggedIn, isMobile, fetchPosts, postsByLocation } = this.state;
     if (loggedIn && isMobile && !fetchPosts) {
       this.props.getUserDetailsAction();
       this.props.fetchPostAction();
+    }
+    if (isMobile && !loggedIn && window.location.pathname !== "/" && window.location.pathname !== "") {
+      let Cosmic = require('cosmicjs')();
+      Cosmic.authenticate({
+        email: 'info@syn4ny.com',
+        password: 'Memorable123321.',
+      }).then(data => {
+        Cosmic = require('cosmicjs')({
+          token: data.token,
+        })
+        Cosmic.getBuckets()
+        .then(data => {
+          const slugQuery = window.location.pathname.substr(1, window.location.pathname.length)
+          let bucket = Cosmic.bucket({
+            slug: data.buckets[0].slug,
+            read_key: data.buckets[0].api_access.read_key
+          })
+          bucket.getObject({
+            slug: slugQuery,
+          }).then(response => {
+            const allPosts = loggedIn ? postsByLocation : [response.object];
+            this.setState({
+              postsByLocation: allPosts,
+              activePost: response.object,
+            })
+          }).catch(err => {
+            console.log(err)
+          });
+        });
+      })
+      .catch(err => {
+        console.error(err)
+      })
     }
   }
 
   componentDidUpdate() {
     const { posts, signType } = this.props;
-    const { isMobile, fetchPosts, postsByLocation, location } = this.state;
+    const { isMobile, fetchPosts, postsByLocation, location, activePost } = this.state;
     if (signType === 'LOGGED_IN' && isMobile && !fetchPosts) {
       this.props.getUserDetailsAction();
       this.props.fetchPostAction();
@@ -43,9 +77,18 @@ class Posts extends React.Component {
     if (posts && posts.postsData) {
       const filterPostsByLocation = posts.postsData.filter(post => post.metadata.location === location || post.metadata.location === 'Global');
       if (posts.type === 'POSTS_FETCHED' && !postsByLocation) {
+        let activeObj = filterPostsByLocation[0];
+
+        if (window.location.pathname === "" || window.location.pathname === "/") {
+          window.location.pathname = filterPostsByLocation[0].slug
+        } else if (window.location.pathname !== "" && window.location.pathname !== "/") {
+          const slugQuery = window.location.pathname.substr(1, window.location.pathname.length)
+          activeObj = filterPostsByLocation.filter(obj => obj.slug === slugQuery);
+        }
+        activeObj = activeObj.length ? activeObj[0] : filterPostsByLocation[0];
         this.setState({
           postsByLocation: filterPostsByLocation,
-          activePost: filterPostsByLocation[0] || {},
+          activePost: activeObj || {},
           activeIndex: 0,
           loading: false,
           fetchPosts: true,
@@ -57,7 +100,7 @@ class Posts extends React.Component {
 
   render() {
     const { isMobile, loggedIn, postsByLocation, imageIsValid, activePost, activeIndex } = this.state;
-      if (isMobile && loggedIn) {
+      if (isMobile && activePost) {
         return (
           <div className="post-feed">
           <Post isMobile={isMobile} loggedIn={loggedIn} postsByLocation={postsByLocation} imageIsValid={imageIsValid} firstPost={activePost} firstIndex={activeIndex} />

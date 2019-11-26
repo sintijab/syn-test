@@ -605,3 +605,25 @@ button:focus {
   margin: .5rem;
   background: #ffffff;
 }
+
+.sign_in-preview {
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 1.5rem;
+  height: 4rem;
+  margin: auto;
+  padding: .15rem .1rem 2rem;
+  background: #f9f9f9;
+  border-top: .5px solid #f7f5f5;
+  z-index: 1000;
+}
+
+.sign-up-form-preview {
+  position: absolute;
+  display: block;
+  left: 0;
+  right: 0;
+  background: #f9f9f9;
+  margin: 0 3.5rem;
+}

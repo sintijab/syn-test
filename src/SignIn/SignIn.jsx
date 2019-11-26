@@ -266,7 +266,7 @@ class SignIn extends React.Component {
         <div className="sign_up-opt">or <span className="sign_up-text" onClick={this.displaySignInOverlay}>Sign in</span></div>
       </form>
     );
-    if (isMobile && !loggedIn && signType.type !== 'LOGGED_IN') {
+    if (isMobile && !loggedIn && signType.type !== 'LOGGED_IN' && (window.location.pathname === "" || window.location.pathname === "/")) {
       return (
         <div className="sign_in" >
         {signUpError && signUpOverlay && <span>Registration has not completed, please try again</span>}
@@ -283,7 +283,17 @@ class SignIn extends React.Component {
           </form>}
        </div>
      );
-    }
+   } else if (isMobile && !loggedIn && signType.type !== 'LOGGED_IN' && window.location.pathname !== "" && window.location.pathname !== "/") {
+     return (
+       <div className="sign_in-preview" >
+         {signInOverlay &&
+           <div className="sign-up-form-preview">
+           <button className="sign_in-input sign_in_btn sign_in_btn-text" onClick={() => window.location.replace(window.location.origin)}>Log In</button>
+           <div className="sign_up-opt">or <span className="sign_up-text" onClick={() => window.location.replace(window.location.origin)}>Create new account</span></div>
+         </div>}
+      </div>
+    );
+   }
     return <div />;
    }
 }

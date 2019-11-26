@@ -5,6 +5,10 @@ import saveBtn from '../img/like.png';
 import saveBtnActive from '../img/like2.png';
 import { getUserDetailsAction, editUserDetailsAction } from '../actions/profileActions.js';
 import { nextPostAction } from '../actions/postActions.js';
+import { validateImgSource } from '../functions.js';
+import defaultPostImg1 from '../img/default001.png';
+import defaultPostImg2 from '../img/default002.png';
+import defaultPostImg3 from '../img/default003.png';
 
 class Post extends React.Component {
 
@@ -59,17 +63,29 @@ class Post extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const { firstPost } = this.props;
+    if (firstPost) {
+      this.setState({
+        activePost: firstPost,
+      })
+    }
+  }
+
   expandInfo() {
     const { showFullInfo } = this.state;
     this.setState({ showFullInfo: !showFullInfo });
   }
 
   nextItem() {
-    const { postsByLocation, firstIndex } = this.props;
-    const { activeIndex } = this.state;
+    const { postsByLocation, firstIndex, firstPost } = this.props;
+    const { activePost } = this.state;
     if (postsByLocation && postsByLocation.length) {
-      const nextIndex = activeIndex ? activeIndex : firstIndex;
-      this.setState({ activePost: postsByLocation[nextIndex + 1], activeIndex: nextIndex + 1, disableBtnValidation: false });
+      const nextItemIndex = (postsByLocation.indexOf(activePost) !== -1 && postsByLocation.indexOf(activePost) !== 0) ?
+        postsByLocation.indexOf(activePost) + 1 : firstIndex + 1;
+      const nextIndex = postsByLocation && nextItemIndex !== postsByLocation.length ? nextItemIndex : firstIndex;
+      this.setState({ activePost: postsByLocation[nextIndex], activeIndex: nextIndex, disableBtnValidation: false });
+      window.history.replaceState(window.location.href, '', `/${postsByLocation[nextIndex].slug}`)
       this.props.nextPostAction();
     }
   }
@@ -86,36 +102,43 @@ class Post extends React.Component {
 
 
   render() {
-    const { isMobile, loggedIn, firstPost, postsByLocation } = this.props;
+    const { isMobile, loggedIn } = this.props;
     const { activePost,  showFullInfo, btnActiveState } = this.state;
-      if (isMobile && loggedIn && firstPost) {
+
+      if (isMobile && activePost) {
+        const post = activePost;
+        let isSourceValid = validateImgSource(post.metadata.img);
+        if (post.metadata.author === 'info@syn4ny.com') { isSourceValid = true; }
+        if (!isSourceValid) {
+          const defaultNumber = Math.floor((Math.random() * 3) + 1);
+          post.metadata.img = defaultNumber === 1 ? defaultPostImg1 : defaultNumber === 2 ? defaultPostImg2 : defaultPostImg3;
+        }
         const postHeaderClassName = showFullInfo ? "active-post-header active-post-header-active" : "active-post-header";
         const postHeaderTextClassName = showFullInfo ? "active-post-header-text" : "active-post-header-about";
         const postHeaderImgClassName = showFullInfo ? "active-post-img active-post-img-active" : "active-post-img";
         const postHeaderTextTitleClassName = showFullInfo ? "active-post-header-title active-post-header-title-active" : "active-post-header-title";
-        const hasMoreThanOnePost = postsByLocation.length > 1;
         const detailedInformation = (
           <div>
             <span className="active-post-header-text active-post-header-text-title">Actions:</span>
-            <span className={postHeaderTextClassName}>{activePost ? activePost.metadata.actions : firstPost.metadata.actions}</span>
+            <span className={postHeaderTextClassName}>{post.metadata.actions}</span>
             <span className="active-post-header-text active-post-header-text-title">Info:</span>
-            <span className={postHeaderTextClassName}>{activePost ? activePost.metadata.info : firstPost.metadata.info}</span>
+            <span className={postHeaderTextClassName}>{post.metadata.info}</span>
             <span className="active-post-header-text active-post-header-text-title">Author:</span>
-            <span className={postHeaderTextClassName}>{activePost ? activePost.metadata.author : firstPost.metadata.author}</span>
+            <span className={postHeaderTextClassName}>{post.metadata.author}</span>
           </div>);
         return (
           <div className="active-post">
             <div className={postHeaderClassName} onClick={this.expandInfo}>
-              <span className={postHeaderTextTitleClassName}>{activePost ? activePost.title : firstPost.title}</span>
+              <span className={postHeaderTextTitleClassName}>{post.title}</span>
               {showFullInfo && <br/>}
               {showFullInfo &&
                 <span className="active-post-header-text active-post-header-text-title">About:</span>}
-              <span className={postHeaderTextClassName}>{activePost ? activePost.metadata.about : firstPost.metadata.about}</span>
+              <span className={postHeaderTextClassName}>{post.metadata.about}</span>
               {showFullInfo && detailedInformation}
             </div>
-            {(firstPost.metadata.img || activePost.metadata.img) &&
-              <img src={activePost ? activePost.metadata.img : firstPost.metadata.img} alt="bkg" className={postHeaderImgClassName} />}
-            {hasMoreThanOnePost && <img alt="next" src={nextBtn} className="active-post-btn-next" onClick={this.nextItem} />}
+            {post.metadata.img &&
+              <img src={post.metadata.img} alt="bkg" className={postHeaderImgClassName} />}
+            {loggedIn && <img alt="next" src={nextBtn} className="active-post-btn-next" onClick={this.nextItem} />}
             <img alt="next" src={`${btnActiveState ? saveBtnActive : saveBtn}`} className="active-post-btn-save" onClick={this.savePost} />
          </div>
        );
