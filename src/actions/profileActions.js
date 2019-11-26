@@ -32,6 +32,7 @@ if (mail) {
 export const editUserDetailsAction = (userData, postId, storePostToAccount, storeType) => dispatch => {
   const { object } = userData || {};
   const { metafields: profileData } = object || [];
+  if (profileData) {
   const Cosmic = require('cosmicjs')({
     token: getCookie('val') // optional
   })
@@ -43,12 +44,12 @@ export const editUserDetailsAction = (userData, postId, storePostToAccount, stor
     })
     let mail = getCookie('sId');
     let adjustedEmail = mail.replace("@", "").replace(/_/g, '-');
-    let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "").toLowerCase();;
+    let emailEncoded = encodeURIComponent(adjustedEmail).replace(/\./g, "").toLowerCase();
 
-    const userIdMetadield = profileData ? profileData.filter(obj => obj.key === 'uid') : [];
-    const userNameMetadield = profileData ? profileData.filter(obj => obj.key === 'uname') : [];
-    const userEmailMetadield = profileData ? profileData.filter(obj => obj.key === 'email') : [];
-    const userPostIds = profileData ? profileData.filter(obj => obj.key === 'storedPostIds') : [];
+    const userIdMetadield = profileData.filter(obj => obj.key === 'uid');
+    const userNameMetadield = profileData.filter(obj => obj.key === 'uname');
+    const userEmailMetadield = profileData.filter(obj => obj.key === 'email');
+    const userPostIds = profileData.filter(obj => obj.key === 'storedPostIds');
 
     const storeTypeAction = userPostIds && userPostIds.length && storeType === 'store';
 
@@ -113,4 +114,5 @@ export const editUserDetailsAction = (userData, postId, storePostToAccount, stor
       console.log(err)
     })
   })
+}
 }
