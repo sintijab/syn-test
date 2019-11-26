@@ -105,7 +105,7 @@ export const signStatusAction = () => dispatch => {
 }
 
 export const getCurrentLocation = () => {
-  axios.get(`http://api.ipstack.com/79.224.135.162?access_key=5e516d5bae0bfa0abd9896479873ad01`)
+  axios.get(`https://api.ipstack.com/79.224.135.162?access_key=b86d42669a6de20c116dba4c93ac9938`)
   .then(function (response) {
     if (response && response.data && response.data.country_name) {
       setCookie('location', response.data.country_name, 1);
