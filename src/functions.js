@@ -57,7 +57,7 @@ export function validateImgSource(src) {
   var parts = src.split('.');
   var extension = parts[parts.length-1];
   var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp'];
-  if(imageTypes.indexOf(extension) !== -1 || extension.indexOf('photo') !== -1) {
+  if(imageTypes.indexOf(extension) !== -1 || extension.indexOf('photo') !== -1 || src.indexOf('drive.google.com') !== -1) {
     return true;
   }
     return false;
