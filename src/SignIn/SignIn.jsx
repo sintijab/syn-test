@@ -276,7 +276,7 @@ class SignIn extends React.Component {
         {signInSuccess === false && <span className="sign_in-input sign-up-msg">Log In failed, please try again!</span>}
           {signInOverlay &&
             <form onSubmit={this.handleSubmit} className="sign-up-form">
-            <input autoCorrect="off" autoCapitalize="off" type="email" name="email" value={email} onChange={this.handleChange} placeholder="Mobile number or email" className="sign_in-input"/>
+            <input autoCorrect="off" autoCapitalize="off" type="email" name="email" value={email} onChange={this.handleChange} placeholder="Email address" className="sign_in-input"/>
             <input autoCorrect="off" type="password" name="password" value={password} onChange={this.handleChange} placeholder="Password" className="sign_in-input"/>
             <button type="submit" className="sign_in-input sign_in_btn sign_in_btn-text">Log In</button>
             <div className="sign_up-opt">or <span className="sign_up-text" onClick={this.displaySignUpOverlay}>Create new account</span></div>
